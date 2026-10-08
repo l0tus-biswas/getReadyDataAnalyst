@@ -25,7 +25,7 @@ Opening `index.html` straight from the file system still works in **local mode**
 
 ## Deploy to Vercel
 
-1. Import the repository. Framework preset **Other**, no build command, empty output directory.
+1. Import the repository. Framework preset **Other**. Leave the build command and output directory empty: the pages are already generated and committed, so there is nothing to build. (`package.json` deliberately has no `build` script, otherwise Vercel would try to run one.)
 2. Add these **environment variables** (Settings > Environment Variables):
 
    | Name | Value |
@@ -53,7 +53,7 @@ After deploying, open the site on your phone or iPad and use **Add to Home Scree
 All HTML pages and `sw.js` are generated from one template:
 
 ```
-npm run build                 # node tools/build-pages.js
+npm run build:pages           # node tools/build-pages.js (run locally, then commit the result)
 python tools/make-icons.py    # regenerate the app icons (needs Pillow)
 ```
 
