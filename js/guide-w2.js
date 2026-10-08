@@ -30,8 +30,8 @@ const A = (sql, why) => pre(sql) + '<p>' + why + '</p>';
 
 GUIDES[2] = {
 intro: `<p>Window functions plus CTEs are the biggest difference between a weak and a strong SQL round. Almost every medium interview question (Nth highest, top-N per group, running total, month-on-month growth, find duplicates) uses them. This week you learn them step by step and practise the classic patterns until they are automatic.</p>
-<p><b>By Sunday you can:</b> rank rows inside groups, compare a row with the previous row, build running totals and moving averages, find duplicates and gaps, and answer 10 business questions on a real sample database (Chinook or Northwind) with a GitHub README.</p>
-<p><b>Time split:</b> weekdays 1.5 h = 25 min learn, 45 min type queries, 20 min practice. Saturday = 10 timed problems. Sunday = mini project. Load the Week 1 schema first; Wednesday and Thursday add three small tables.</p>
+<p><b>By Day 7 you can:</b> rank rows inside groups, compare a row with the previous row, build running totals and moving averages, find duplicates and gaps, and answer 10 business questions on a real sample database (Chinook or Northwind) with a GitHub README.</p>
+<p><b>Time split:</b> weekdays 1.5 h = 25 min learn, 45 min type queries, 20 min practice. Day 6 = 10 timed problems. Day 7 = mini project. Load the Week 1 schema first; Day 3 and Day 4 add three small tables.</p>
 <p><b>Dialect:</b> PostgreSQL. Window functions also work in MySQL 8+, SQL Server and Oracle with the same syntax.</p>`,
 days: [
 /* ---------------- MON ---------------- */
@@ -300,7 +300,7 @@ study: [
  'Ties matter. Always ask: "If two people share the Nth salary, show both?" This question impresses interviewers.',
  'MySQL warning: you cannot DELETE from a table and select from the same table in a plain subquery (error 1093). Use a derived table or a join delete.'],
 how: [
- '[10 min] Create the contacts table from the Wednesday EXTRA block (it has duplicate emails).',
+ '[10 min] Create the contacts table from the Day 3 EXTRA block (it has duplicate emails).',
  '[15 min] Find duplicates, then write the SELECT that lists the rows you would delete before running any DELETE.',
  '[15 min] Delete duplicates keeping the lowest id. Check the table afterwards.',
  '[20 min] Write Nth highest salary 3 ways (DENSE_RANK, OFFSET, subquery). Test N = 2 and N = 3.',
@@ -393,7 +393,7 @@ study: [
  'NOT EXISTS is safe with NULLs. NOT IN is not. Prefer EXISTS or NOT EXISTS for "does it exist" questions.',
  'Optional: a view is a saved query that you use like a table. It stores no data. An index is a lookup structure that makes searching on a column faster but slows inserts a little and uses space.'],
 how: [
- '[10 min] Create the suppliers table from the Wednesday EXTRA block.',
+ '[10 min] Create the suppliers table from the Day 3 EXTRA block.',
  '[20 min] Run UNION, UNION ALL, INTERSECT and EXCEPT on the city lists. Predict row counts first.',
  '[20 min] Write the same "customers with orders" question using IN, EXISTS and a JOIN. Compare results.',
  '[15 min] Write the "customers without orders" using NOT IN, NOT EXISTS, LEFT JOIN. Then think: which one breaks if orders.customer_id had a NULL?',
@@ -580,7 +580,7 @@ WITH m AS (
 SELECT month, revenue,
        ROUND(100.0 * (revenue - LAG(revenue) OVER (ORDER BY month))
              / NULLIF(LAG(revenue) OVER (ORDER BY month), 0), 1) AS mom_pct
-FROM m ORDER BY month;`) + `<p><b>Explain:</b> Q1 groups invoices by country, sums Total and shows the top 5. Q3 walks from the invoice line to the track to the genre, because the genre is stored on the track. Q4 is the same MoM pattern you practised on Tuesday. Your exact numbers depend on your copy of the database, so read your own output and write the insight, for example: "The USA brings the most revenue, about a fifth of the total." Check the real numbers before you write a sentence.</p>
+FROM m ORDER BY month;`) + `<p><b>Explain:</b> Q1 groups invoices by country, sums Total and shows the top 5. Q3 walks from the invoice line to the track to the genre, because the genre is stored on the track. Q4 is the same MoM pattern you practised on Day 2. Your exact numbers depend on your copy of the database, so read your own output and write the insight, for example: "The USA brings the most revenue, about a fifth of the total." Check the real numbers before you write a sentence.</p>
 <p><b>README template:</b></p>` + pre(`# Chinook SQL Analysis
 Business questions answered with PostgreSQL on the Chinook music-store database.
 
@@ -615,7 +615,7 @@ r AS (
   SELECT genre, track, revenue,
          ROW_NUMBER() OVER (PARTITION BY genre ORDER BY revenue DESC, track) AS rn
   FROM t)
-SELECT genre, track, revenue FROM r WHERE rn <= 3 ORDER BY genre, rn;`, 'Aggregate first, then rank inside each genre, then keep rank 3 or less. Same top-N-per-group pattern as Thursday.')],
+SELECT genre, track, revenue FROM r WHERE rn <= 3 ORDER BY genre, rn;`, 'Aggregate first, then rank inside each genre, then keep rank 3 or less. Same top-N-per-group pattern as Day 4.')],
  ['Chinook Q10: average invoice value by country, only countries with 5 or more invoices.', A(`SELECT "BillingCountry", COUNT(*) AS n_invoices, ROUND(AVG("Total"), 2) AS avg_invoice
 FROM "Invoice"
 GROUP BY "BillingCountry"

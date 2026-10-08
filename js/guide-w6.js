@@ -1,8 +1,8 @@
 /* Week 6 guide: Python for analysis (pandas) */
 GUIDES[6] = {
   intro: `<p><b>Why this week matters.</b> If a job description says "Python", the interview will have a small pandas task: clean a messy table, group and aggregate, merge two tables, or remove outliers. These tasks are short, and they repeat. This week you learn exactly those patterns.</p>
-<p><b>By Sunday you can:</b> read a CSV and explore it, filter with loc and iloc, clean missing and messy data, use groupby, pivot_table, merge, concat and apply, make the 6 basic charts, do an end-to-end EDA (exploratory data analysis), and write an outlier-removal function from memory.</p>
-<p><b>Time split.</b> Mon: Python basics refresh. Tue: read and select data. Wed: cleaning. Thu: groupby, merge and the "session duration" interview problem. Fri: charts. Sat (3.5 h): full EDA notebook, your Week 6 deliverable. Sun (3.5 h): Q&A review, 5 SQL problems, and short optional numpy and scikit-learn peeks.</p>
+<p><b>By Day 7 you can:</b> read a CSV and explore it, filter with loc and iloc, clean missing and messy data, use groupby, pivot_table, merge, concat and apply, make the 6 basic charts, do an end-to-end EDA (exploratory data analysis), and write an outlier-removal function from memory.</p>
+<p><b>Time split.</b> Day 1: Python basics refresh. Day 2: read and select data. Day 3: cleaning. Day 4: groupby, merge and the "session duration" interview problem. Day 5: charts. Day 6 (3.5 h): full EDA notebook, your Week 6 deliverable. Day 7 (3.5 h): Q&A review, 5 SQL problems, and short optional numpy and scikit-learn peeks.</p>
 <p><b>How to practise.</b> Open Jupyter (or Google Colab if installation is a problem). Type every example yourself; do not copy-paste. After each block, change one thing and predict the output before running. All examples use small inline data, so you can paste and run them. The same steps apply to any Kaggle file. Note: new pandas versions print a text column as <code>str</code>, older ones print <code>object</code>. Both are fine.</p>`,
   days: [
     /* ---------------- MON ---------------- */
@@ -243,7 +243,7 @@ print(df)
 # 1   Ravi   Delhi   35   800.0 2024-02-10
 # 3  Meena  Mumbai   38   950.0 2024-03-15
 # 5  Kiran   Delhi  230   400.0 2024-04-01`)}
-<p><b>Explain.</b> The duplicate was hidden: "  asha " and "Asha " look different until you strip and fix the case, so always clean text first. <code>errors='coerce'</code> turned "n/a" and the impossible date 2024-13-40 into NaN/NaT (missing), instead of stopping with an error. We filled age with the median because it is not pulled by the extreme 230. But 230 is still wrong: that is an outlier or typo, handled in Saturday's outlier function. The median for Meena (38) is a guess; in a real project record that you imputed it. After dropna the row with a missing name is gone, which is why index 4 disappears.</p>`,
+<p><b>Explain.</b> The duplicate was hidden: "  asha " and "Asha " look different until you strip and fix the case, so always clean text first. <code>errors='coerce'</code> turned "n/a" and the impossible date 2024-13-40 into NaN/NaT (missing), instead of stopping with an error. We filled age with the median because it is not pulled by the extreme 230. But 230 is still wrong: that is an outlier or typo, handled in Day 6's outlier function. The median for Meena (38) is a guess; in a real project record that you imputed it. After dropna the row with a missing name is gone, which is why index 4 disappears.</p>`,
       practice: [
         ['What percentage of each column is missing?', `${pre(`(raw.isnull().mean() * 100).round(1)
 # name 16.7, city 0.0, age 16.7, amount 0.0, signup 0.0`)}<p>isnull() gives True/False; mean of True/False is the share of True.</p>`],
@@ -453,7 +453,7 @@ print(sat.groupby('class')['satisfied'].mean())     # Business 1.0, Eco 0.0`)}
 ${pre(`monthly = df.groupby(df['order_date'].dt.to_period('M'))['revenue'].sum()
 monthly.plot(kind='line', marker='o', title='Revenue by month')
 plt.ylabel('Revenue'); plt.show()`)}
-<p>Here <code>df</code> is the orders table from Tuesday with order_date converted by <code>pd.to_datetime</code>. <code>to_period('M')</code> groups by month.</p>`,
+<p>Here <code>df</code> is the orders table from Day 2 with order_date converted by <code>pd.to_datetime</code>. <code>to_period('M')</code> groups by month.</p>`,
       practice: [
         ['Which chart would you use for: (a) age distribution, (b) average spend per plan, (c) monthly sales trend, (d) spread of delivery time per city, (e) price vs quantity?', `<p>(a) histogram, (b) bar chart, (c) line chart, (d) box plot, (e) scatter plot.</p>`],
         ['Plot a histogram of monthly_spend with 5 bins and a title.', `${pre(`sns.histplot(data=df, x='monthly_spend', bins=5)
@@ -491,7 +491,7 @@ plt.ylabel('Revenue'); plt.show()`)}<p>Sorted bars are easier to read. Use order
       how: [
         'Pick the Kaggle dataset (1,000 to 100,000 rows is ideal). Create a notebook "eda_<datasetname>.ipynb" with headings: 1 Load, 2 Clean, 3 Questions, 4 Analysis, 5 Insights. [10 min]',
         'Load and look: shape, head, info, describe, isnull().sum(), duplicated().sum(), value_counts on categories. Write the problems found. [25 min]',
-        'Clean: apply Wednesday steps. Write a cleaning log in a markdown cell. [30 min]',
+        'Clean: apply Day 3 steps. Write a cleaning log in a markdown cell. [30 min]',
         'Write 4 specific questions in markdown (for example: which plan has the highest churn? what drives support calls?). [10 min]',
         'Answer each question with a groupby or crosstab table AND one chart. Put one sentence of interpretation under each. [60 min]',
         'Write the outlier function (below), test it on the toy data, then apply it to one numeric column of your dataset and compare mean and median before and after. [30 min]',

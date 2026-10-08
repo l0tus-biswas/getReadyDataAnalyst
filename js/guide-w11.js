@@ -1,7 +1,7 @@
 GUIDES[11] = {
   intro: `<p>Week 11 is about the <b>manager round</b>. By now you can write SQL and build dashboards. A manager also wants to know: can you think about a business problem, can you explain your work in simple words, and will you be easy to work with?</p>
-<p><b>By Sunday you will be able to:</b> solve a business case with a clear structure, say your HR answers smoothly (no reading from paper), present each project in 2 minutes or 5 minutes, and finish one full mock interview (HR + technical + case). You will also send 10 applications.</p>
-<p><b>Time split:</b> Mon cases (1.5 h), Tue HR scripts (1.5 h), Wed project walkthroughs (1.5 h), Thu feedback fixes (1.5 h, plus an optional 2 h Tableau block you can move to the weekend), Fri optional SQL performance (1.5 h), Sat mock interview #2 (3.5 h), Sun applications (3.5 h).</p>
+<p><b>By Day 7 you will be able to:</b> solve a business case with a clear structure, say your HR answers smoothly (no reading from paper), present each project in 2 minutes or 5 minutes, and finish one full mock interview (HR + technical + case). You will also send 10 applications.</p>
+<p><b>Time split:</b> Day 1 cases (1.5 h), Day 2 HR scripts (1.5 h), Day 3 project walkthroughs (1.5 h), Day 4 feedback fixes (1.5 h, plus an optional 2 h Tableau block you can move to any free day), Day 5 optional SQL performance (1.5 h), Day 6 mock interview #2 (3.5 h), Day 7 applications (3.5 h).</p>
 <p><b>Rule for this week:</b> say answers out loud. Reading an answer in your head is not practice. Record your voice on your phone and listen once.</p>`,
   days: [
     {
@@ -86,7 +86,7 @@ WHERE u.signup_date >= DATE '2024-05-06'
         `[10 min] Choose 4 true stories from your last 2 years: a tight deadline, a data error you caught, something you taught yourself, a disagreement with a client or teammate.`,
         `[20 min] Write each story in STAR form with 4 lines. Add your real numbers.`,
         `[20 min] Say each answer aloud with a timer. Record on your phone. Listen once. Remove filler words ("basically", "actually").`,
-        `[5 min] Save the final scripts in one file called hr-answers.txt. You will use it in Saturday's mock.`
+        `[5 min] Save the final scripts in one file called hr-answers.txt. You will use it in Day 6's mock.`
       ],
       example: `<p><b>Tell me about yourself (about 75 seconds).</b></p>
 <p>"I am a survey programmer with over 2 years of experience. I build questionnaires with skip logic and quotas, and I run data checks so clients get clean respondent data on time. In that work I started to enjoy the data itself, so over the last few months I trained myself in SQL, Python and Power BI. I built [N] projects: an e-commerce analysis on SQL and Power BI, a survey insights dashboard, and a [marketing or edtech] analysis in Python. For example, in the e-commerce project I found [insight with X]. Now I want a Data Analyst role where I can use my data quality skills and survey background and grow into answering business questions with data."</p>
@@ -181,8 +181,8 @@ HAVING COUNT(DISTINCT order_id) > 1;`)}`,
         `[10 min] Mark the top 3 repeating problems. Write a one-line fix for each (for example, "Always say the join type and why").`,
         `[40 min] Fix them: for each, re-read the topic, then solve 3 new practice problems from SQL practice sites in the Resources page, and explain your solution aloud.`,
         `[15 min] Retest: ask a friend or an AI to ask 5 questions on your weak topics. Score yourself out of 5.`,
-        `[15 min] Update your tracker and write your focus list for the Saturday mock.`,
-        `Optional [2 h, move to a free evening or Sunday]: do the Tableau Public build below.`
+        `[15 min] Update your tracker and write your focus list for the Day 6 mock.`,
+        `Optional [2 h, move to a free evening or a spare day]: do the Tableau Public build below.`
       ],
       example: `<p><b>Feedback tracker (copy this table):</b></p>
 ${pre(`Topic            | What went wrong                  | Category      | Fix                          | Retest score
@@ -344,10 +344,10 @@ FROM orders;`)}<p>Explanation: ROWS plus a unique tiebreaker (order_id) gives a 
         `[10 min] Set up: quiet room, water, blank page, timer, recording on (screen and voice). Give your partner the question list below.`,
         `[30 min] Part 1 HR: Tell me about yourself, why switch, no-experience objection, 1 STAR question, strengths and weaknesses, salary expectation, "any questions for us?".`,
         `[60 min] Part 2 Technical: 4 SQL questions (join, GROUP BY with HAVING, window function, CTE), 3 DAX or Power BI questions, 2 pandas questions, 3 statistics questions. Type the SQL in a real editor.`,
-        `[30 min] Part 3 Case and project: one business case (any of Monday's 5 styles, new numbers) and one project walkthrough with 2 follow-ups.`,
+        `[30 min] Part 3 Case and project: one business case (any of Day 1's 5 styles, new numbers) and one project walkthrough with 2 follow-ups.`,
         `[10 min] Break. Drink water. Do not look at notes.`,
         `[45 min] Review: listen to the recording, fill the scoring sheet, write a fix list with the top 5 gaps.`,
-        `[25 min] Start fixing the first gap, then schedule the others across Sunday and next week.`
+        `[25 min] Start fixing the first gap, then schedule the others across Day 7 and next week.`
       ],
       example: `<p><b>Question bank for your partner (pick a mix from each part):</b></p>
 <ul>

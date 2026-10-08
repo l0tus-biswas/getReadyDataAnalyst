@@ -40,8 +40,8 @@ const A = (sql, why) => pre(sql) + '<p>' + why + '</p>';
 
 GUIDES[1] = {
 intro: `<p>SQL is tested in almost every data analyst interview, often as the first filter. This week you build the base: SELECT, filters, GROUP BY, JOINs, CASE, NULL handling, subqueries and CTEs. Nothing here is hard, but you must be able to write it without looking.</p>
-<p><b>By Sunday you can:</b> read a business question, pick the right tables, join them without wrong row counts, group and filter the result, and explain your query aloud. You will also have a GitHub repo with your solved queries.</p>
-<p><b>Time split:</b> weekdays 1.5 h = 20 min reading, 50 min typing queries, 20 min practice questions. Weekend = more practice and one deliverable. Type every query yourself. Do not copy and paste.</p>
+<p><b>By Day 7 you can:</b> read a business question, pick the right tables, join them without wrong row counts, group and filter the result, and explain your query aloud. You will also have a GitHub repo with your solved queries.</p>
+<p><b>Time split:</b> weekdays 1.5 h = 20 min reading, 50 min typing queries, 20 min practice questions. Days 6-7 = more practice and one deliverable. Type every query yourself. Do not copy and paste.</p>
 <p><b>Dialect:</b> all SQL here is PostgreSQL. Small differences in MySQL and SQL Server are noted where they matter.</p>`,
 days: [
 /* ---------------- MON ---------------- */
@@ -63,7 +63,7 @@ how: [
  '[10 min] Open a SQL editor on that database. Paste the practice schema from the example below. Run it with Alt+X (run script). Check with SELECT * FROM employees;',
  '[15 min] Load the Chinook sample database: download the PostgreSQL .sql script from the Chinook GitHub page (see resources), create a second database named chinook and run the script. Table names may be quoted like "Track" in this version. If you get "relation does not exist", put double quotes around the name.',
  '[25 min] Type the example queries below one by one. Change the WHERE value and predict the result before you run it.',
- '[10 min] Solve the practice questions. Save your answers in a file called week1.sql. You will push it to GitHub on Saturday.'],
+ '[10 min] Solve the practice questions. Save your answers in a file called week1.sql. You will push it to GitHub on Day 6.'],
 example: `<p>We use three small tables all week: <b>customers</b>, <b>orders</b>, <b>employees</b>. Run this once.</p>` + pre(S) + `
 <p>Now try three queries:</p>` + pre(`-- 1. IT employees, highest salary first (name breaks the tie)
 SELECT name, salary
@@ -131,7 +131,7 @@ how: [
  '[25 min] Solve 5 aggregate problems on SQLBolt (the exercises after lessons 10-11) or Mode SQL tutorial, then do the practice questions below.',
  '[15 min] Write week1.sql notes: one comment line explaining WHERE vs HAVING in your own words.',
  '[10 min] Try the same in Chinook: count tracks per genre ("Track" table, GROUP BY "GenreId").'],
-example: `<p>Use the tables from Monday. Orders per customer:</p>` + pre(`SELECT customer_id,
+example: `<p>Use the tables from Day 1. Orders per customer:</p>` + pre(`SELECT customer_id,
        COUNT(*)                AS n_orders,
        SUM(amount)             AS total,
        ROUND(AVG(amount), 2)   AS avg_order
@@ -414,7 +414,7 @@ how: [
  '[30 min] On your PC, install Git for Windows. In the folder with week1.sql run: git init, git add ., git commit -m "week 1 queries", git branch -M main, git remote add origin YOUR_REPO_URL, git push -u origin main. (Or use the "Add file > Upload files" button on GitHub if Git feels hard today.)',
  '[30 min] Clean your week1.sql: add a comment above each query with the business question in plain English. A reader should understand it without running it.',
  '[20 min] Solve 3 more medium-easy problems from LeetCode Database or HackerRank and save them.'],
-example: `<p>Using Monday's tables. Goal: find employees earning above the company average (61250).</p>` + pre(`-- 1. Scalar subquery
+example: `<p>Using Day 1's tables. Goal: find employees earning above the company average (61250).</p>` + pre(`-- 1. Scalar subquery
 SELECT name, salary
 FROM employees
 WHERE salary > (SELECT AVG(salary) FROM employees)

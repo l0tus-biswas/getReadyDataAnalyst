@@ -1,8 +1,8 @@
 /* Week 5 guide: Power BI intermediate + Project 1 (Survey / CSAT dashboard) */
 GUIDES[5] = {
   intro: `<p><b>Why this week matters.</b> In interviews, "show me a YoY measure" and "walk me through your dashboard" are very common. This week you learn the DAX time-intelligence pattern, the features that make a report feel professional (drill-through, tooltips, conditional formatting), and then you build <b>Project 1</b>. Your survey job is your edge: most freshers cannot explain NPS, top-2-box, speeders or significance in a crosstab. You can.</p>
-<p><b>By Sunday you can:</b> build a Calendar table and write MoM and YoY measures; add drill-through and tooltip pages; lay out a clean dashboard; and show a finished 3-page survey dashboard on GitHub with insights and recommendations.</p>
-<p><b>Time split.</b> Mon-Wed (1.5 h each): learn the Power BI skills on your Week 4 Superstore file. Thu-Fri (1.5 h each): data work (Power Query or pandas). Sat (3.5 h): build the dashboard. Sun (3.5 h): README, insights, GitHub, and 5 SQL problems. Do not skip the Sunday SQL: it keeps your daily habit alive.</p>`,
+<p><b>By Day 7 you can:</b> build a Calendar table and write MoM and YoY measures; add drill-through and tooltip pages; lay out a clean dashboard; and show a finished 3-page survey dashboard on GitHub with insights and recommendations.</p>
+<p><b>Time split.</b> Days 1-3 (1.5 h each): learn the Power BI skills on your Week 4 Superstore file. Days 4-5 (1.5 h each): data work (Power Query or pandas). Day 6 (3.5 h): build the dashboard. Day 7 (3.5 h): README, insights, GitHub, and 5 SQL problems. Do not skip the Day 7 SQL: it keeps your daily habit alive.</p>`,
   days: [
     /* ---------------- MON ---------------- */
     {
@@ -312,7 +312,7 @@ df[rating_cols] = df[rating_cols].replace(0, np.nan)`)}<p>NaN is ignored by mean
         'Export 3 small result tables to CSV (segment_metrics.csv, drivers.csv, crosstab.csv) for Power BI tomorrow. [10 min]',
         'Write 3 plain-sentence findings with numbers in a text file. [5 min]'
       ],
-      example: `<p>Continuing with the cleaned inline sample (6 rows) from Thursday. On the real file the same code works with your column names. Copy and run (it includes the cleaning code again so it runs by itself):</p>
+      example: `<p>Continuing with the cleaned inline sample (6 rows) from Day 4. On the real file the same code works with your column names. Copy and run (it includes the cleaning code again so it runs by itself):</p>
 ${pre(`import pandas as pd, numpy as np
 from scipy.stats import chi2_contingency
 
@@ -353,7 +353,7 @@ t = pd.DataFrame({'Satisfied': [80, 60], 'Not satisfied': [20, 40]},
 chi2, p, dof, expected = chi2_contingency(t)
 print(round(chi2, 2), round(p, 4), dof)          # 8.6 0.0034 1`)}
 <p><b>Explain it.</b> In the 6-row sample: Promoters (9-10) = 3 of 6 = 50%. Detractors (0-6) = 2 of 6 = 33.3%. NPS = 50 - 33.3 = 16.7. By segment: Business has 2 promoters and 1 passive out of 3, so NPS = +66.7. Economy has 1 promoter and 2 detractors out of 3, so NPS = -33.3. In the chi-square table, 80% of Business are satisfied vs 60% of Economy. The p-value 0.0034 is below 0.05, so the difference is statistically significant. Note that 80% vs 60% satisfied with only 10 people in each class (8 of 10 vs 6 of 10) gives p = 0.63: sample size matters. (scipy applies Yates continuity correction to 2x2 tables by default; without it the first table gives chi-square 9.52, p = 0.0020, the same conclusion.) Also note: with only 3 people per segment, the 6-row sample is for learning the code, not for conclusions. On the real file you will have thousands of rows.</p>
-<p><b>The same NPS in DAX</b> (for Saturday), with a calculated column for the group:</p>
+<p><b>The same NPS in DAX</b> (for Day 6), with a calculated column for the group:</p>
 ${pre(`NPS Group =
 SWITCH (
     TRUE (),
@@ -433,7 +433,7 @@ PAGE 2  SEGMENTS        "Economy and loyal-customer gap is the biggest"
 PAGE 3  DRIVERS         "Fix these 3 first"
  [Bar: correlation with satisfaction]  [Table: importance vs performance]
  [Text: 3 recommendations]`)}
-<p><b>Key measures</b> (assume tables and columns named as in Thursday's cleaned file; adjust the names to yours):</p>
+<p><b>Key measures</b> (assume tables and columns named as in Day 4's cleaned file; adjust the names to yours):</p>
 ${pre(`Responses = COUNTROWS ( Survey )
 
 CSAT % =
@@ -463,7 +463,7 @@ IF ( [Responses] < 30, "Low base: read with care", "" )`)}
 CSAT Gap = [CSAT %] - [CSAT Overall %]`)}<p>ALL removes the segment filters so the overall number stays fixed.</p>`],
         ['A heat-map matrix colours every cell red because the range is huge. What is wrong and how to fix it?', `<p>The gradient is using min/max across all cells, or a few extreme cells dominate. Fix: in Conditional formatting set Minimum, Centre and Maximum to fixed numbers (for example 0, 0.5, 1) and use a diverging scale with the middle colour near the average.</p>`],
         ['How can you let the user see the base size for each bar without cluttering the chart?', `<p>Add Responses to the tooltip (Visualizations > Tooltips well), or use a report-page tooltip. Also add the Low Base Warning measure as a subtitle.</p>`],
-        ['Write a DAX measure for NPS by segment (the Segment slicer or axis does the split).', `${pre(`NPS = DIVIDE ( [Promoters] - [Detractors], [Responses] ) * 100`)}<p>Given the Promoters, Detractors and Responses measures from Friday. Because they are measures, putting Segment on the axis calculates NPS for each segment automatically.</p>`]
+        ['Write a DAX measure for NPS by segment (the Segment slicer or axis does the split).', `${pre(`NPS = DIVIDE ( [Promoters] - [Detractors], [Responses] ) * 100`)}<p>Given the Promoters, Detractors and Responses measures from Day 5. Because they are measures, putting Segment on the axis calculates NPS for each segment automatically.</p>`]
       ],
       important: [
         ['Walk me through your dashboard (2 minutes).', `<p>I start with the business problem: find which passenger groups are unhappy and what to fix. Then page 1 shows overall CSAT and service ratings, page 2 shows which segments are below average, page 3 shows the drivers and my three recommendations. I mention the data cleaning (duplicates, speeders), the DAX measures I wrote (CSAT, top-2-box, gap vs overall), and end with the main insight and the action.</p>`],

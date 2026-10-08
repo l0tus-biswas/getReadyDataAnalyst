@@ -1,8 +1,8 @@
 /* Week 3 guide: Excel + Power Query */
 GUIDES[3] = {
   intro: `<p><b>Why this week matters:</b> Many analyst interviews include an Excel test or a take-home with a messy file. Interviewers want to see that you are fast with lookups, SUMIFS, pivot tables and cleaning. Power Query shows you can make cleaning repeatable, which is a big plus.</p>
-<p><b>By Sunday you can:</b> look up data with XLOOKUP / VLOOKUP / INDEX-MATCH, summarise with SUMIFS and pivots, clean a messy table in Power Query, and build a one-page Excel dashboard (KPI cards + 4 charts + slicers).</p>
-<p><b>Time split:</b> Mon-Fri, 1.5 h a day: 25 min learn, 45 min hands-on, 20 min practice questions. Saturday (3.5 h): dashboard project. Sunday (3.5 h): revision, interview questions and SQL window functions so your SQL does not go rusty.</p>
+<p><b>By Day 7 you can:</b> look up data with XLOOKUP / VLOOKUP / INDEX-MATCH, summarise with SUMIFS and pivots, clean a messy table in Power Query, and build a one-page Excel dashboard (KPI cards + 4 charts + slicers).</p>
+<p><b>Time split:</b> Days 1-5, 1.5 h a day: 25 min learn, 45 min hands-on, 20 min practice questions. Day 6 (3.5 h): dashboard project. Day 7 (3.5 h): revision, interview questions and SQL window functions so your SQL does not go rusty.</p>
 <p><b>Tip:</b> Type every formula yourself. Do not copy-paste. Muscle memory is what you need in a live test. Formulas below work in Excel 365 / 2021. Where a function is new (XLOOKUP, IFS, FILTER, UNIQUE), an older-version option is given.</p>`,
   days: [
     {
@@ -310,7 +310,7 @@ Lower fence = Q1 - 1.5*IQR    -> 725
       done: `You are done when you can clean the messy sample with TRIM/PROPER/VALUE, flag a duplicate, and compute IQR fences without notes.`
     },
     {
-      title: `Weekend project: Excel dashboard on Superstore`,
+      title: `Day 6 project: Excel dashboard on Superstore`,
       time: `3.5 h`,
       study: [
         `A good dashboard answers 3-4 business questions on one screen: how much did we sell, how much profit, where, and what changed.`,

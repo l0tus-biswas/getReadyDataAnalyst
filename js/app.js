@@ -9,7 +9,7 @@ function renderSide(){
       (n[0]==='interview'&&inQA?'<div class="sub">'+QORDER.map(k=>'<a class="'+(CUR==='qa-'+k?'on':'')+'" href="qa-'+k+'.html">'+QA[k].emoji+' '+QA[k].name+'</a>').join('')+'</div>':'')+
       (n[0]==='plan'&&inPlan?'<div class="sub">'+WEEKS.map(w=>'<a class="'+(CUR==='week-'+w.n?'on':'')+'" href="week-'+w.n+'.html">W'+w.n+' · '+w.title+'</a>').join('')+'</div>':'')}).join('')}
 function renderChrome(){const c=calc(),L=LEVELS[level(c.ready)];
-  $('#chrome').innerHTML='<span class="pill">'+L[2]+' '+L[1]+'</span><span class="pill">⭐ '+c.xp+' XP</span><span class="pill">🔥 '+streak()+'</span><span class="pill">🎯 '+pct(c.ready)+'% ready</span>'+(typeof syncBadge==='function'?syncBadge():'')}
+  $('#chrome').innerHTML='<span class="pill">'+L[2]+' '+L[1]+'</span><span class="pill">⭐ '+c.xp+' XP</span><span class="pill">🔥 '+streak()+'</span><span class="pill">🎯 '+pct(c.ready)+'% ready</span>'}
 function applySearch(){
   if($('#tsearch')){const q=ui.tq.trim().toLowerCase();document.querySelectorAll('#view .row[data-s]').forEach(r=>(r.closest('.titem')||r).classList.toggle('hide',!!q&&!r.dataset.s.includes(q)))}
   if($('#qsearch')){const q=(ui.qq||'').trim().toLowerCase();document.querySelectorAll('#view .qitem').forEach(r=>r.classList.toggle('hide',!!q&&!r.dataset.s.includes(q)))}
@@ -48,7 +48,6 @@ document.addEventListener('change',e=>{
     afterChange();render();
   }else if(t.matches('input[data-act="mustonly"]')){S.mustOnly=t.checked;save();render()}
   else if(t.matches('select[data-app]')){S.apps[+t.dataset.app].status=t.value;afterChange();render();if(t.value==='Offer')confetti()}
-  else if(t.id==='imp'){const f=t.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{Object.assign(S,JSON.parse(rd.result));save();render();toast('Imported')}catch(err){toast('Invalid file')}};rd.readAsText(f)}
 });
 document.addEventListener('input',e=>{
   if(e.target.id==='tsearch'){ui.tq=e.target.value;applySearch()}
@@ -79,10 +78,8 @@ document.addEventListener('click',e=>{
   else if(a==='openall'){const ids=qIds(arg),any=ids.some(i=>ui.open[i]);ids.forEach(i=>ui.open[i]=!any);render()}
   else if(a==='app-add'){const c=$('#a_c').value.trim(),r=$('#a_r').value.trim();if(!c)return;S.apps.unshift({c,r,d:todayS(),status:'Applied'});S.days[todayS()]=S.days[todayS()]||1;const x=REG['j:8'],n=S.apps.length;if(n>=10)S.done['j:8']=1;if(n>=25)S.done['j:9']=1;if(n>=50)S.done['j:10']=1;afterChange();render()}
   else if(a==='app-del'){S.apps.splice(+arg,1);save();render()}
-  else if(a==='setstart'){const v=$('#startd').value;if(v){S.start=iso(mondayOf(pd(v)));save();toast('Start date saved');render()}}
-  else if(a==='export'){const bl=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),u=URL.createObjectURL(bl),l=document.createElement('a');l.href=u;l.download='da-quest-progress.json';l.click();URL.revokeObjectURL(u)}
-  else if(a==='import'){$('#imp').click()}
-  else if(a==='reset'){if(confirm('Reset ALL progress? This cannot be undone.')){const th=S.theme;S={done:{},flag:{},prac:{},days:{},apps:[],badges:{},theme:th,start:null,mustOnly:false,lvl:0};const t=new Date(),g=t.getDay();S.start=iso(mondayOf(g===0||g===6?addDays(t,2):t));save();render()}}
+  else if(a==='setstart'){const v=$('#startd').value;if(v){S.start=v;S.startExact=true;save();toast('Day 1 is now '+dayDate(1,0));render()}}
+  else if(a==='startoday'){S.start=todayS();S.startExact=true;save();toast('Day 1 is today. Let\'s go! 🚀');render()}
 });
 document.addEventListener('click',e=>{if(e.target.closest('#side a'))$('#side').classList.remove('open')});
 

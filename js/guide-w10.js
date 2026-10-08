@@ -1,9 +1,9 @@
 /* Week 10 guide: Interview Drilling, Technical */
 GUIDES[10] = {
   intro: `<p><b>Why this week matters.</b> Most analyst hiring loops are: online test, HR screen, technical round, manager round. This week drills the <b>technical round</b>: timed SQL, Power BI/DAX, Excel, Python, statistics, aptitude and a take-home case. The goal is not to learn new things. The goal is to make what you know <b>fast, accurate and easy to say aloud</b>.</p>
-<p><b>By Sunday you will be able to:</b> solve window-function problems in about 10 minutes each, answer 100 rapid-fire questions in one line each, write 5 DAX measures from memory, solve percent and ratio questions without a calculator panic, read tables and charts quickly, finish a 3-hour take-home with a 5-slide deck, and you will have one recorded mock interview with a written weak-topic list.</p>
+<p><b>By Day 7 you will be able to:</b> solve window-function problems in about 10 minutes each, answer 100 rapid-fire questions in one line each, write 5 DAX measures from memory, solve percent and ratio questions without a calculator panic, read tables and charts quickly, finish a 3-hour take-home with a 5-slide deck, and you will have one recorded mock interview with a written weak-topic list.</p>
 <p><b>How to work this week.</b> Use a timer for every drill. Use a plain notebook (or notes file) for a "flag list": every question you got wrong or slow goes on it. Redo the flag list the next day. A question you can answer twice in a row, in under a minute, is "done".</p>
-<p><b>Time plan:</b> Mon SQL timed set (1.5 h), Tue SQL revision (1.5 h), Wed Power BI/DAX + Excel (1.5 h), Thu Python + stats (1.5 h), Fri aptitude + take-home practice (2 h: this day is 30 minutes longer than usual), Sat mock interview (3.5 h), Sun timed take-home (3.5 h).</p>
+<p><b>Time plan:</b> Day 1 SQL timed set (1.5 h), Day 2 SQL revision (1.5 h), Day 3 Power BI/DAX + Excel (1.5 h), Day 4 Python + stats (1.5 h), Day 5 aptitude + take-home practice (2 h: this day is 30 minutes longer than usual), Day 6 mock interview (3.5 h), Day 7 timed take-home (3.5 h).</p>
 <p><b>Honest note.</b> Your SQL run-time practice is available free in the browser at DB Fiddle (see Resources). Paste the CREATE TABLE and INSERT statements from this guide and run the answers to see the output yourself.</p>`,
   days: [
     /* ---------------- MON ---------------- */
@@ -171,7 +171,7 @@ WHERE user_id = 2;`)}<p>Rows: 2025-01-01 NULL; 2025-01-03 prev 2025-01-01; 2025-
         `[10 min] Open the SQL section of the Interview Q&A page on this site. Read the list of questions only (not answers).`,
         `[30 min] Rapid-fire round 1: go through the 20 questions in the example. Answer each aloud in one line, then check. Put a flag on any miss.`,
         `[20 min] Tricky outputs: type the schema from the example into DB Fiddle and predict the output of each query BEFORE running. Compare.`,
-        `[15 min] Re-do your flagged questions from Monday's problems (write the SQL again from scratch).`,
+        `[15 min] Re-do your flagged questions from Day 1's problems (write the SQL again from scratch).`,
         `[10 min] Go through the SQL Q&A page questions you marked as hard in earlier weeks. Re-answer aloud.`,
         `[5 min] Write the top 3 weak SQL topics on your flag list with the next revision date.`
       ],
@@ -497,7 +497,7 @@ orders['big_order'] = orders['amount'] > 200`)}<p>The median of 200, 150, 300, 1
       title: 'Aptitude, data interpretation and a 90-minute take-home case',
       time: '2 h',
       study: [
-        `Time plan for today: this day is 2 hours (30 minutes aptitude and data interpretation, then the 90-minute case). If you only have 1.5 hours, do the aptitude block and the first 60 minutes of the case, and finish it on Saturday morning.`,
+        `Time plan for today: this day is 2 hours (30 minutes aptitude and data interpretation, then the 90-minute case). If you only have 1.5 hours, do the aptitude block and the first 60 minutes of the case, and finish it on Day 6 morning.`,
         `Percent change = (new - old) / old x 100. Always divide by the OLD value. A 25 percent rise followed by a 20 percent fall nets to zero because the base changes.`,
         `Percentage points versus percent: going from 4 percent to 5 percent is +1 percentage point and +25 percent relative.`,
         `Ratio: A:B = 3:5 means A is 3 parts and B is 5 parts out of 8. Total x part / total parts gives each share.`,

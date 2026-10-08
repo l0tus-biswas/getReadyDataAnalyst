@@ -1,9 +1,9 @@
 /* Week 9 guide: Project 3 (Martech / Edtech) */
 GUIDES[9] = {
   intro: `<p><b>Why this week matters.</b> Interviewers at the manager round almost always ask: "Walk me through a project." Two projects show you can do the work. A <b>third project in a different domain</b> (marketing or learning analytics) shows range. It also gives you the funnel, ROI and segment vocabulary that most business teams use every day.</p>
-<p><b>By Sunday you will be able to:</b> clean and explore a campaign or learner dataset in pandas, build a funnel and a channel ROI table, build a clean Power BI dashboard, write insights with a clear recommendation, publish a README on GitHub, speak a 2-minute walkthrough, and send your first 10 job applications and 5 referral messages.</p>
+<p><b>By Day 7 you will be able to:</b> clean and explore a campaign or learner dataset in pandas, build a funnel and a channel ROI table, build a clean Power BI dashboard, write insights with a clear recommendation, publish a README on GitHub, speak a 2-minute walkthrough, and send your first 10 job applications and 5 referral messages.</p>
 <p><b>Which dataset?</b> Choose <b>UCI Bank Marketing</b> (martech) if you want a clear conversion story (one flat file, easy). Choose <b>OULAD</b> (edtech) if you want drop-off and risk analysis (several linked tables, a bit harder). Do only one. Depth beats two half-finished projects.</p>
-<p><b>Time plan (about 10.5 hours):</b> Mon 1.5 h questions, Tue 1.5 h clean + EDA, Wed 1.5 h funnel/ROI/segments, Thu 1.5 h Power BI, Fri 1.5 h insights, Sat 3.5 h README + publish + pitch, Sun 3.5 h job applications. All code below uses a <b>small inline sample</b> you can paste and run. The same steps apply to the real file. Always check real column names first with <code>df.columns</code> and <code>df.info()</code>.</p>`,
+<p><b>Time plan (about 10.5 hours):</b> Day 1 1.5 h questions, Day 2 1.5 h clean + EDA, Day 3 1.5 h funnel/ROI/segments, Day 4 1.5 h Power BI, Day 5 1.5 h insights, Day 6 3.5 h README + publish + pitch, Day 7 3.5 h job applications. All code below uses a <b>small inline sample</b> you can paste and run. The same steps apply to the real file. Always check real column names first with <code>df.columns</code> and <code>df.info()</code>.</p>`,
   days: [
     /* ---------------- MON ---------------- */
     {
@@ -97,7 +97,7 @@ ${pre(`Question                                   Metric                  Column
         `Know the leakage trap: in Bank Marketing, call duration is only known after the call, so it must not be used to predict who will subscribe. Mention this in your README as a data caveat.`
       ],
       how: [
-        `[10 min] Open your notebook from Monday. Run df.info(), df.describe() and df.isna().sum(). Write 3 observations in a markdown cell.`,
+        `[10 min] Open your notebook from Day 1. Run df.info(), df.describe() and df.isna().sum(). Write 3 observations in a markdown cell.`,
         `[10 min] Count duplicates with df.duplicated().sum(). Look at them with df[df.duplicated(keep=False)]. Drop with drop_duplicates() only after you understand why they exist.`,
         `[15 min] Clean text columns (strip, lower). Replace the text "unknown" with NaN where you want it treated as missing, but keep a count of how many there were.`,
         `[15 min] Handle missing and impossible values. Write down your rule for each column (fill, drop, keep as unknown) in a markdown cell.`,
@@ -265,7 +265,7 @@ ORDER BY cac DESC;`)}<p>Multiplying by 1.0 avoids integer division; NULLIF avoid
         `Share carefully: screenshots and the .pbix file in GitHub are safe. "Publish to web" makes the report public to everyone, so use it only for open data like this.`
       ],
       how: [
-        `[10 min] Open Power BI Desktop. Get data from your clean CSV files (the channel table and the segment tables from Wednesday). In Power Query check types and click Close and Apply.`,
+        `[10 min] Open Power BI Desktop. Get data from your clean CSV files (the channel table and the segment tables from Day 3). In Power Query check types and click Close and Apply.`,
         `[10 min] If you use a funnel visual, duplicate the funnel table query, unpivot the step columns (Transform, Unpivot Columns), and name the columns Stage and Count.`,
         `[15 min] Create measures (Modelling, New measure). Use the DAX in the example: totals, CTR, signup rate, CAC, ROAS, ROI.`,
         `[10 min] Add KPI cards on the top row: Total Spend, Total Customers, CAC, ROAS (or Completion rate for edtech).`,
@@ -273,7 +273,7 @@ ORDER BY cac DESC;`)}<p>Multiplying by 1.0 avoids integer division; NULLIF avoid
         `[15 min] Format: page title, meaningful visual titles, percent and thousand formats, one accent colour. Turn off gridlines you do not need. Check the dashboard on one slicer click.`,
         `[10 min] Save as dashboard/project3.pbix. Take a screenshot (Windows key + Shift + S) and save as images/dashboard.png. Also export to PDF (File, Export, Export to PDF).`
       ],
-      example: `<p><b>Data:</b> the Campaign table from Wednesday (channel, impressions, clicks, signups, customers, spend, revenue). Same steps apply to your real file; use your own column names.</p>
+      example: `<p><b>Data:</b> the Campaign table from Day 3 (channel, impressions, clicks, signups, customers, spend, revenue). Same steps apply to your real file; use your own column names.</p>
 ${pre(`Total Impressions = SUM(Campaign[impressions])
 Total Clicks      = SUM(Campaign[clicks])
 Total Signups     = SUM(Campaign[signups])

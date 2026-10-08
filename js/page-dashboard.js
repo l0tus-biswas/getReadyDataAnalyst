@@ -4,15 +4,15 @@ function pageDashboard(){
   const done=wk>12;
   // today
   let todayHtml='';
-  if(idx<0){todayHtml=`<p>Your plan starts on <b>${S.start}</b> (in ${-idx} day${-idx>1?'s':''}). Use the time to set up SQL + GitHub, or change the start date in Settings.</p>`}
+  if(idx<0){todayHtml=`<p>Your plan starts on <b>${dayDate(1,0)}</b> (in ${-idx} day${-idx>1?'s':''}). Use the time to set up SQL + GitHub, or change the start date in Settings.</p>`}
   else if(done){todayHtml=`<p>🎉 You've completed the 12-week plan. Keep applying (5 a day) and practising SQL daily.</p>`}
   else{const di=idx%7,tasks=WEEKS[wk-1].days[di].filter(t=>!(S.mustOnly&&t.tag!=='M'));
-    todayHtml=`<p class="sm">Week ${wk} · ${DAYN[di]} · ${di<5?'~1.5 hrs':'~3.5 hrs'} · <b>${WEEKS[wk-1].title}</b></p>`+tasks.map(t=>chk(t.id,t.text,t.tag)).join('')+
+    todayHtml=`<p class="sm">Week ${wk} · ${DAYN[di]} (${dayDate(wk,di)}) · ${di<5?'~1.5 hrs':'~3.5 hrs'} · <b>${WEEKS[wk-1].title}</b></p>`+tasks.map(t=>chk(t.id,t.text,t.tag)).join('')+
       `<div class="qa-actions"><button class="btn ghost" data-act="rest">😴 Mark today as rest day (keeps streak)</button><a class="btn" href="week-${wk}.html#day-${di}" style="text-decoration:none">📖 Today's detailed guide</a><a class="btn ghost" href="plan.html" style="text-decoration:none">Open full plan</a></div>`}
   // behind/ahead
   let pace='';
   if(idx>=0&&!done){let exp=0,dn=0;WEEKS.forEach(w=>w.days.forEach((d,di)=>d.forEach(t=>{if(t.tag==='M'){if((w.n-1)*7+di<idx)exp++;if(S.done[t.id])dn++}})));
-    const diff=dn-exp;pace=diff>=0?`<span class="ok">✅ On track${diff>0?` (+${diff} ahead)`:''}</span>`:`<span class="bad">⚠️ ${-diff} mandatory task${-diff>1?'s':''} behind. Catch up on the weekend.</span>`}
+    const diff=dn-exp;pace=diff>=0?`<span class="ok">✅ On track${diff>0?` (+${diff} ahead)`:''}</span>`:`<span class="bad">⚠️ ${-diff} mandatory task${-diff>1?'s':''} behind. Catch up on your next long day (Day 6 or 7).</span>`}
   // journey
   const nodes=WEEKS.map(w=>{const p=prog(weekIds(w.n,true));const cl=p.p===1?'done':(w.n===wk?'cur':'');return `<div class="node ${cl}"><b>${p.p===1?'✓':w.n}</b>W${w.n}</div>`}).join('')+`<div class="node goal"><b>🏆</b>Offer</div>`;
   const rk=28+(c.ready)*(100-0);
@@ -23,7 +23,7 @@ function pageDashboard(){
    WEEKS.forEach(w=>w.days.forEach((d,di)=>d.forEach(t=>{if(t.tag==='M'&&!S.done[t.id]){const pos=(w.n-1)*7+di;if(!nxt)nxt=t;if(pos<=idx&&!due)due=t}})));
    const t=due||nxt,fl=Object.keys(S.flag).length;
    nextHtml=`<div class="card next-card"><div class="sm">${due?(due.w*7-7+due.d<idx?'⏪ CATCH UP FIRST':'👉 DO THIS NEXT'):(t?'👉 NEXT IN YOUR PLAN':'')}</div>
-   ${t?`<p style="margin:4px 0 10px"><b>Week ${t.w} · ${DAYN[t.d]}:</b> ${esc(t.text)}</p><div class="qa-actions" style="margin:0"><a class="btn" href="week-${t.w}.html#day-${t.d}" style="text-decoration:none">📖 Open the guide for this</a>`:'<p>🎉 All must-do plan tasks are complete.</p><div class="qa-actions" style="margin:0">'}
+   ${t?`<p style="margin:4px 0 10px"><b>Week ${t.w} · ${DAYN[t.d]} (${dayDate(t.w,t.d)}):</b> ${esc(t.text)}</p><div class="qa-actions" style="margin:0"><a class="btn" href="week-${t.w}.html#day-${t.d}" style="text-decoration:none">📖 Open the guide for this</a>`:'<p>🎉 All must-do plan tasks are complete.</p><div class="qa-actions" style="margin:0">'}
    <a class="btn ghost" href="interview.html#quiz" style="text-decoration:none">🎲 5-minute quiz</a>${fl?`<a class="btn ghost" href="interview.html" style="text-decoration:none">⭐ Review ${fl} flagged</a>`:''}</div></div>`}
   return `
   <div class="card hero">${ring(c.ready)}
@@ -51,5 +51,5 @@ function pageDashboard(){
   </div>
   <div class="card"><h3 style="margin-top:0">🏅 Badges (${Object.keys(S.badges).length}/${BADGES.length})</h3><div class="grid g4">${BADGES.map(b=>`<div class="badge ${S.badges[b[0]]?'got':''}"><b>${b[1]}</b><span>${esc(b[2])}</span><small>${esc(b[3])}</small></div>`).join('')}</div></div>
   <div class="note">💬 ${QUOTES[new Date().getDate()%QUOTES.length]}</div>
-  <div class="note"><b>How it works:</b> Tick tasks to earn XP. <span class="tag M">MUST</span> items count toward Job Readiness; <span class="tag O">OPTIONAL</span> and <span class="tag A">ADVANCED</span> are bonus XP and can be skipped for interviews. Study 1.5 hrs on weekdays and about 3.5 hrs on weekends.</div>`;
+  <div class="note"><b>How it works:</b> Tick tasks to earn XP. <span class="tag M">MUST</span> items count toward Job Readiness; <span class="tag O">OPTIONAL</span> and <span class="tag A">ADVANCED</span> are bonus XP and can be skipped for interviews. Days 1-5 of each week are about 1.5 hrs; Days 6-7 are about 3.5 hrs.</div>`;
 }

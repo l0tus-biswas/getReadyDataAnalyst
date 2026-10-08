@@ -1,7 +1,7 @@
 GUIDES[12] = {
   intro: `<p>Week 12 is the <b>final sprint</b>. You do not learn new big topics now. You sharpen what you have, finish your public profile, take the last mock, learn how to talk about money, and build a daily routine that keeps applications going until you have an offer.</p>
-<p><b>By Sunday you will have:</b> four one-page cheat sheets (SQL, DAX, pandas, stats), five SQL tasks and one pandas task solved under time, polished GitHub READMEs and LinkedIn, Mock #3 scored, a salary range and negotiation script, 10 more applications (50 or more in total), and a 30-day plan.</p>
-<p><b>Time split:</b> Mon cheat sheets (1.5 h), Tue timed practice (1.5 h), Wed GitHub and LinkedIn (1.5 h), Thu mock #3 (1.5 h), Fri salary research (1.5 h), Sat applications (3.5 h), Sun retrospective and plan (3.5 h; the last part is optional).</p>
+<p><b>By Day 7 you will have:</b> four one-page cheat sheets (SQL, DAX, pandas, stats), five SQL tasks and one pandas task solved under time, polished GitHub READMEs and LinkedIn, Mock #3 scored, a salary range and negotiation script, 10 more applications (50 or more in total), and a 30-day plan.</p>
+<p><b>Time split:</b> Day 1 cheat sheets (1.5 h), Day 2 timed practice (1.5 h), Day 3 GitHub and LinkedIn (1.5 h), Day 4 mock #3 (1.5 h), Day 5 salary research (1.5 h), Day 6 applications (3.5 h), Day 7 retrospective and plan (3.5 h; the last part is optional).</p>
 <p><b>Mindset:</b> You will get rejections. A rejection is not a verdict on you. It is data. Keep the routine going.</p>`,
   days: [
     {
@@ -335,7 +335,7 @@ Aspiring Data Analyst | SQL, Power BI, Python | 2+ years in survey data and QA`)
         `Finish with the questions you will ask the interviewer. Having good questions shows interest.`
       ],
       how: [
-        `[5 min] Set up: camera, recording, timer, the scoring sheet from Mock #2 (see Week 11 Saturday).`,
+        `[5 min] Set up: camera, recording, timer, the scoring sheet from Mock #2 (see Week 11 Day 6).`,
         `[10 min] HR round: Tell me about yourself, why switch, strengths and weaknesses, expected salary.`,
         `[25 min] Technical: 3 SQL questions (one with window functions), 2 DAX questions, 2 pandas or stats questions. Have the partner change the data after you answer to test understanding.`,
         `[15 min] Case: a new business case in a style you practised least. Include a KPI question.`,

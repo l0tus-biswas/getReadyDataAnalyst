@@ -4,7 +4,7 @@
 const KEY='da-quest-v1';
 let S={done:{},flag:{},prac:{},days:{},apps:[],badges:{},theme:null,start:null,mustOnly:false,lvl:0};
 try{const raw=localStorage.getItem(KEY);if(raw)Object.assign(S,JSON.parse(raw))}catch(e){}
-const save=()=>{S._t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(typeof syncSoon==='function')syncSoon()};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const ui={open:{},tag:'all',tq:''};
 /* Normalise shapes: questions may be old arrays [q,a] or new objects; topic items may lack meta. */
 const QDEF={short:'',lvl:'M',freq:2,follow:[],mistake:'',tags:[]};
@@ -23,10 +23,14 @@ JOBS.forEach((j,i)=>REG[`j:${i}`]={kind:'job',tag:'M',xp:10});
 const iso=d=>{const x=new Date(d.getTime()-d.getTimezoneOffset()*60000);return x.toISOString().slice(0,10)};
 const pd=s=>new Date(s+'T00:00:00');
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
-const mondayOf=d=>{const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
 const todayS=()=>iso(new Date());
-if(!S.start){const t=new Date();const g=t.getDay();S.start=iso(mondayOf(g===0||g===6?addDays(t,2):t));save()}
+// Day 1 of the plan is exactly the start date you choose (default: the day you first open the site).
+// Older saves normalised the start to a Monday; if nothing has been ticked yet, move it to today.
+if(!S.start||(!S.startExact&&!Object.keys(S.done).length&&!Object.keys(S.days).length))S.start=todayS();
+if(!S.startExact){S.startExact=true;save()}
 const dayIdx=()=>Math.round((pd(todayS())-pd(S.start))/864e5);
+const dayDate=(w,d)=>addDays(pd(S.start),(w-1)*7+d).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+const planEnd=()=>addDays(pd(S.start),12*7-1).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
 
 /* ---------------- calc ---------------- */
 function calc(){

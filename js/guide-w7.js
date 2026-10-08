@@ -1,8 +1,8 @@
 /* Week 7 guide: Statistics + Business Thinking */
 GUIDES[7] = {
   intro: `<p><b>Why this week matters.</b> Almost every manager round has a "case" question ("sales dropped 25%, what do you do?") or a stats question ("p-value is 0.04, what does it mean?"). You do not need advanced maths. You need clear definitions, small worked numbers, and a calm structure you can say aloud.</p>
-<p><b>By Sunday you will be able to:</b> calculate mean, median, standard deviation and IQR by hand; explain the normal curve, CLT, p-value, confidence interval and Type I/II errors in plain words; read an A/B test result; define 10 business KPIs; and answer a metric-drop case with a fixed framework.</p>
-<p><b>Time split:</b> Mon-Fri 1.5 h each (about 30 min learn, 45 min practice by hand, 15 min speak your answers aloud). Saturday 3.5 h: case practice with a timed mock. Sunday 3.5 h: review, KPI sheet and survey statistics (your edge as a survey programmer).</p>
+<p><b>By Day 7 you will be able to:</b> calculate mean, median, standard deviation and IQR by hand; explain the normal curve, CLT, p-value, confidence interval and Type I/II errors in plain words; read an A/B test result; define 10 business KPIs; and answer a metric-drop case with a fixed framework.</p>
+<p><b>Time split:</b> Days 1-5 1.5 h each (about 30 min learn, 45 min practice by hand, 15 min speak your answers aloud). Day 6 3.5 h: case practice with a timed mock. Day 7 3.5 h: review, KPI sheet and survey statistics (your edge as a survey programmer).</p>
 <p><b>Tip:</b> Use a calculator and a notebook. Doing the arithmetic by hand once makes the idea stick for ever.</p>`,
   days: [
     /* ---------------- MON ---------------- */
@@ -123,7 +123,7 @@ z(86) = (86-70)/8 = +2.0`)}<p>Both are 2 std devs away, one below and one above 
 n = 144: SE = 1.2 / 12 = 0.1`)}<p>Four times the sample halves the SE.</p>`],
         ['Survey: 1,600 respondents, 50% say "yes". What is the standard error of the proportion? Give the range 95% of surveys would fall in.', `${pre(`SE = sqrt( p(1-p) / n ) = sqrt( 0.5 x 0.5 / 1600 )
    = sqrt(0.0001563) = 0.0125  (1.25 percentage points)
-95% range = 50% +/- 1.96 x 1.25% = 50% +/- 2.45%  -> 47.55% to 52.45%`)}<p>This is the margin of error idea, you will use it again on Sunday.</p>`],
+95% range = 50% +/- 1.96 x 1.25% = 50% +/- 2.45%  -> 47.55% to 52.45%`)}<p>This is the margin of error idea, you will use it again on Day 7.</p>`],
         ['Explain in two sentences why the average of a sample is more stable than a single value, even if the data is not normal.', `<p>A single value can be any extreme value, but in an average the highs and lows cancel out, so the spread shrinks by sqrt(n). By the CLT, those sample averages also look roughly normal when n is big enough, even if the raw data is skewed.</p>`]
       ],
       important: [
@@ -397,7 +397,7 @@ FROM (
         '[40 min] Do the 3 case drills in practice below: write a half-page outline for each, then say each aloud in 3 minutes. Record on your phone.',
         '[10 min] Listen to the recording. Fix: Did you start with validation? Did you give numbers? Did you end with a recommendation?',
         '[45 min] Timed mock: ask a friend (or an AI chat) to give you a NEW case you have not seen ("orders fell in one city", "refund rate doubled"). Give yourself 5 min to structure on paper and 5 min to speak. Then ask for feedback on structure and numbers.',
-        '[45 min] Write the KPI cheat sheet from Friday as a clean 1-page table. Add a "if it falls, check..." column. Save it as a PDF in your notes.'
+        '[45 min] Write the KPI cheat sheet from Day 5 as a clean 1-page table. Add a "if it falls, check..." column. Save it as a PDF in your notes.'
       ],
       example: `<p><b>Question:</b> "Our online sales dropped 25% last month. What do you do?"</p>
 <p><b>1. Clarify first (30 seconds):</b> "Which metric: revenue or orders? Compared with which period? Is it all products and regions?"</p>
@@ -443,7 +443,7 @@ New vs repeat           both fell, new more`)}
       title: 'Q&A review, KPI sheet and survey statistics',
       time: '3.5 h',
       study: [
-        'Review block: re-do the hardest hand-calculations from Mon-Fri without looking (IQR fences, z-score, SE, z-test, A/B test, LTV, ROI).',
+        'Review block: re-do the hardest hand-calculations from Days 1-5 without looking (IQR fences, z-score, SE, z-test, A/B test, LTV, ROI).',
         'Optional: Survey margin of error for a proportion = 1.96 x sqrt(p(1-p)/n). Worst case is p = 0.5. A bigger sample gives a smaller margin, but with diminishing returns.',
         'Optional: Weighting. If your sample has too many of one group, give each respondent a weight = population share / sample share, so the totals match the real population.',
         'Optional: Design effect and effective sample size. Weights reduce precision, so the effective n is smaller than the raw n. Mention it, you do not need to calculate it.',
@@ -452,7 +452,7 @@ New vs repeat           both fell, new more`)}
         'Your edge: most analysts have never cleaned or weighted survey data. Use this in interviews.'
       ],
       how: [
-        '[45 min] Timed recall: close this guide and write the formulas for mean, std dev, IQR fences, z-score, SE, CI, z-test for proportions, sample size, CAC, LTV, ROI. Check against Mon-Fri and mark mistakes.',
+        '[45 min] Timed recall: close this guide and write the formulas for mean, std dev, IQR fences, z-score, SE, CI, z-test for proportions, sample size, CAC, LTV, ROI. Check against Days 1-5 and mark mistakes.',
         '[45 min] Q&A drill: open the Stats and Case sections of the Interview Q&A page in this app. Answer 15 questions aloud, 30-60 seconds each. Flag the weak ones and re-read.',
         '[30 min] Finish the KPI cheat sheet (one page: KPI, formula, tiny example, "if it falls, check...") and the metric-drop framework page.',
         '[45 min] Optional: do the survey statistics example below and the practice questions. Compute by hand, then confirm in Python.',

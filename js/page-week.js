@@ -24,7 +24,7 @@ function pageWeek(n){
     const dp=d.practice.map((q,i)=>`pr:${n}:${di}:${i}`),pd2=dp.filter(i=>S.prac[i]).length;
     const key=`w${n}d${di}`,mAll=tasks.filter(t=>t.tag==='M'),mDone=mAll.length>0&&mAll.every(t=>S.done[t.id]);
     h+=`<details class="gday" data-k="${key}" id="day-${di}" ${hasOpen(key,di===(today<0?0:today))}>
-    <summary><span class="dn">${DAYN[di]}</span><span style="flex:1">${esc(d.title)}</span>${mDone?'<span class="ok">✓</span>':''}<span class="sm">${esc(d.time)} · tasks ${td}/${tasks.length} · practice ${pd2}/${dp.length}</span></summary>
+    <summary><span class="dn">${DAYN[di]}</span><span class="sm">${dayDate(n,di)}</span><span style="flex:1">${esc(d.title)}</span>${mDone?'<span class="ok">✓</span>':''}<span class="sm">${esc(d.time)} · tasks ${td}/${tasks.length} · practice ${pd2}/${dp.length}</span></summary>
     <div class="body">
       <nav class="dnav">${[['study','📖 Study'],['how','🛠️ Steps'],['ex','💡 Example'],['prac','✍️ Practice'],['iq','🎤 Interview']].map(s=>`<a href="#${key}-${s[0]}" data-act="goto:${key}-${s[0]}">${s[1]}</a>`).join('')}</nav>
       <div class="gsec"><h4>✅ Plan tasks for ${DAYN[di]}</h4>${tasks.map(t=>chk(t.id,t.text,t.tag)).join('')}</div>

@@ -7,9 +7,9 @@
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const pre=s=>'<pre>'+esc(s.trim())+'</pre>';
 const M=t=>[t,'M'],O=t=>[t,'O'],A=t=>[t,'A'];
-const DAYN=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DAYN=['Day 1','Day 2','Day 3','Day 4','Day 5','Day 6','Day 7'];   // plan days, counted from the start date
 
-/* ---------------- 12-WEEK PLAN (weekday ≈1.5h, weekend ≈3.5h) ---------------- */
+/* ---------------- 12-WEEK PLAN (days 1-5 ≈1.5h, days 6-7 ≈3.5h) ---------------- */
 const WEEKS=[
 {n:1,title:'SQL Foundations',goal:'Write SELECT, JOIN, GROUP BY queries confidently. SQL is tested in almost every analyst interview.',deliver:'GitHub repo "sql-practice" with 25+ solved queries.',days:[
  [M('Setup: install PostgreSQL/MySQL + DBeaver (or use db-fiddle.com). Load the Chinook sample DB. Learn SELECT, WHERE, ORDER BY, LIMIT, DISTINCT.')],

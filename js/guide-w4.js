@@ -1,8 +1,8 @@
 /* Week 4 guide: Power BI Basics + Data Modeling */
 GUIDES[4] = {
   intro: `<p><b>Why this week matters:</b> Interviewers (Ivanti, Deloitte and others) often ask you to write DAX measures live and to explain a star schema. If you can say "fact table, dimension tables, one-to-many, measure not column" and write Net Sales and Unique Customers, you already beat many freshers.</p>
-<p><b>By Sunday you can:</b> load and clean data in Power BI, build a star-schema model, create the common visuals, write 8-10 basic DAX measures, explain CALCULATE and filter context in simple words, and show a 2-page dashboard on Superstore.</p>
-<p><b>Time split:</b> Mon-Fri, 1.5 h: 25 min learn, 45 min hands-on, 20 min practice. Saturday (3.5 h): build the dashboard. Sunday (3.5 h): review Power BI Q&A, practise DAX from memory, 5 SQL problems, optional publish.</p>
+<p><b>By Day 7 you can:</b> load and clean data in Power BI, build a star-schema model, create the common visuals, write 8-10 basic DAX measures, explain CALCULATE and filter context in simple words, and show a 2-page dashboard on Superstore.</p>
+<p><b>Time split:</b> Days 1-5, 1.5 h: 25 min learn, 45 min hands-on, 20 min practice. Day 6 (3.5 h): build the dashboard. Day 7 (3.5 h): review Power BI Q&A, practise DAX from memory, 5 SQL problems, optional publish.</p>
 <p><b>Note:</b> Power BI Desktop runs on Windows only. If your work laptop blocks installs, use a personal Windows PC. Excel formulas from Week 3 and SQL joins from Week 1 will help here: a relationship is like a JOIN, and a measure is like an aggregate in GROUP BY.</p>`,
   days: [
     {
@@ -280,7 +280,7 @@ Total                1750               1150       1750           100.0%`)}
       done: `You are done when you can write Net Sales, Unique Customers, a CALCULATE category measure and a percent-of-total measure without notes, and explain filter context aloud.`
     },
     {
-      title: `Weekend project: Superstore Power BI dashboard (2 pages)`,
+      title: `Day 6 project: Superstore Power BI dashboard (2 pages)`,
       time: `3.5 h`,
       study: [
         `Plan before you build: write 4 business questions. Example: How are sales and profit trending? Which category and region earn most? Which sub-categories lose money? Do discounts hurt profit?`,
