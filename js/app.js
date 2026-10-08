@@ -29,9 +29,10 @@ function afterChange(){
   const c=calc();let newB=[];
   BADGES.forEach(b=>{if(!S.badges[b[0]]&&b[4](c)){S.badges[b[0]]=todayS();newB.push(b)}});
   const li=level(c.ready);
-  if(li>S.lvl){S.lvl=li;toast(`🆙 Level up! ${LEVELS[li][2]} ${LEVELS[li][1]}`);confetti()}
+  if(newB.length>3)celebrate({big:true,emoji:'🏅',title:newB.length+' badges unlocked!',sub:newB.slice(0,5).map(x=>x[2]).join(', ')+(newB.length>5?' and more':'')});
+  else newB.forEach(b=>celebrate({big:true,emoji:b[1],title:'Badge unlocked: '+b[2],sub:b[3]}));
+  if(li>S.lvl){S.lvl=li;celebrate({big:true,emoji:LEVELS[li][2],title:'Level up! '+LEVELS[li][1],sub:`You are ${pct(c.ready)}% job ready.`})}
   else if(li<S.lvl)S.lvl=li;
-  if(newB.length){toast(`🏅 Badge unlocked: ${newB.map(b=>b[2]).join(', ')}`);confetti()}
   save();
 }
 
@@ -40,13 +41,14 @@ document.addEventListener('change',e=>{
   const t=e.target;
   if(t.matches('input[data-id]')){
     const id=t.dataset.id;
-    if(t.checked){S.done[id]=1;S.days[todayS()]=1;toast(`+${REG[id].xp} XP`)}else delete S.done[id];
+    if(t.checked){const rect=t.getBoundingClientRect(),before=doneStates(id);S.done[id]=1;S.days[todayS()]=1;celebrateItem(id,before,rect)}else delete S.done[id];
     afterChange();render();
   }else if(t.matches('input[data-pid]')){
     const id=t.dataset.pid;
-    if(t.checked){S.prac[id]=1;S.days[todayS()]=1;toast('+3 XP')}else delete S.prac[id];
+    if(t.checked){const rect=t.getBoundingClientRect();S.prac[id]=1;S.days[todayS()]=1;celebratePrac(id,null,rect)}else delete S.prac[id];
     afterChange();render();
   }else if(t.matches('input[data-act="mustonly"]')){S.mustOnly=t.checked;save();render()}
+  else if(t.matches('input[data-act="celeb"]')){S.celebrate=t.checked;save();if(t.checked)miniBurst(t.getBoundingClientRect(),'Celebrations on 🎉')}
   else if(t.matches('select[data-app]')){S.apps[+t.dataset.app].status=t.value;afterChange();render();if(t.value==='Offer')confetti()}
 });
 document.addEventListener('input',e=>{
@@ -72,13 +74,14 @@ document.addEventListener('click',e=>{
   else if(a==='quiz-start'){if(startQuiz(arg,10)){render();const el=document.getElementById('quiz');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}}
   else if(a==='quiz-new'){const sc=ui.quiz?ui.quiz.scope:'all';ui.quiz=null;startQuiz(sc,10);render()}
   else if(a.startsWith('quiz-')){quizAct(a)}
-  else if(a==='daydone'){const [n,d]=arg.split(':').map(Number);let xp=0;WEEKS[n-1].days[d].forEach(t=>{if(t.tag==='M'&&!S.done[t.id]){S.done[t.id]=1;xp+=REG[t.id].xp}});if(xp){S.days[todayS()]=1;toast('+'+xp+' XP, day complete!');afterChange();render()}}
+  else if(a==='daydone'){const [n,d]=arg.split(':').map(Number);const rect=b.getBoundingClientRect(),wkBefore=weekComplete(n);let xp=0;WEEKS[n-1].days[d].forEach(t=>{if(t.tag==='M'&&!S.done[t.id]){S.done[t.id]=1;xp+=REG[t.id].xp}});if(xp){S.days[todayS()]=1;const a={w:n,d,day:true,week:weekComplete(n)};const first=WEEKS[n-1].days[d].find(t=>t.tag==='M');celebrateWins(first.id,{day:false,week:wkBefore},a);miniBurst(rect,`+${xp} XP`);afterChange();render()}}
   else if(a==='flag'){if(S.flag[arg])delete S.flag[arg];else S.flag[arg]=1;save();render()}
   else if(a==='rand'){const ids=qIds(arg).filter(i=>!S.done[i]);if(!ids.length){toast('All prepared! 🎉');return}const id=ids[Math.floor(Math.random()*ids.length)];ui.open[id]=true;render();const el=document.getElementById(id.replace(/:/g,'-'));if(el)el.scrollIntoView({behavior:'smooth',block:'center'})}
   else if(a==='openall'){const ids=qIds(arg),any=ids.some(i=>ui.open[i]);ids.forEach(i=>ui.open[i]=!any);render()}
   else if(a==='app-add'){const c=$('#a_c').value.trim(),r=$('#a_r').value.trim();if(!c)return;S.apps.unshift({c,r,d:todayS(),status:'Applied'});S.days[todayS()]=S.days[todayS()]||1;const x=REG['j:8'],n=S.apps.length;if(n>=10)S.done['j:8']=1;if(n>=25)S.done['j:9']=1;if(n>=50)S.done['j:10']=1;afterChange();render()}
   else if(a==='app-del'){S.apps.splice(+arg,1);save();render()}
   else if(a==='setstart'){const v=$('#startd').value;if(v){S.start=v;S.startExact=true;save();toast('Day 1 is now '+dayDate(1,0));render()}}
+  else if(a==='celeb-test'){const was=S.celebrate;S.celebrate=true;celebrate({big:true,emoji:'🎉',title:'This is how a win looks!',sub:'Finish a day, week, topic or project to see it for real.',xp:50});S.celebrate=was}
   else if(a==='startoday'){S.start=todayS();S.startExact=true;save();toast('Day 1 is today. Let\'s go! 🚀');render()}
 });
 document.addEventListener('click',e=>{if(e.target.closest('#side a'))$('#side').classList.remove('open')});

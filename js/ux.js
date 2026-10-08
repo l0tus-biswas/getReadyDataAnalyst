@@ -31,13 +31,17 @@ function quizCard(){
   :`<p class="sm">Say your answer out loud first. Then reveal.</p><div class="qa-actions"><button class="btn" data-act="quiz-show">Show answer (Space)</button><button class="btn ghost" data-act="quiz-skip">Skip (S)</button><button class="btn ghost" data-act="quiz-end">Close</button></div>`}
   </div>`;
 }
+function quizFinished(z){
+  const n=z.ids.length,perfect=z.got===n&&n>0;
+  celebrate({big:perfect,emoji:perfect?'💯':'🎉',title:perfect?'Perfect round!':'Quiz complete!',sub:`${z.got} of ${n} answered confidently${z.rev?`, ${z.rev} flagged for revision`:''}.`,xp:z.got>=Math.ceil(n/2)?bonus('quiz'+Date.now(),perfect?15:5):0});
+}
 function quizAct(a){
   const z=ui.quiz;if(!z)return;
   const id=z.ids[z.i];
   if(a==='quiz-show')z.show=!z.show;
-  else if(a==='quiz-got'&&id){S.done[id]=1;delete S.flag[id];S.days[todayS()]=1;z.got++;z.i++;z.show=false;afterChange()}
-  else if(a==='quiz-rev'&&id){S.flag[id]=1;z.rev++;z.i++;z.show=false;save()}
-  else if(a==='quiz-skip'){z.i++;z.show=false}
+  else if(a==='quiz-got'&&id){const rect=document.querySelector('#quiz .btn')?document.querySelector('#quiz .btn').getBoundingClientRect():null,b=doneStates(id);S.done[id]=1;delete S.flag[id];S.days[todayS()]=1;z.got++;z.i++;z.show=false;celebrateItem(id,b,rect);if(z.i>=z.ids.length)quizFinished(z);afterChange()}
+  else if(a==='quiz-rev'&&id){S.flag[id]=1;z.rev++;z.i++;z.show=false;save();if(z.i>=z.ids.length)quizFinished(z)}
+  else if(a==='quiz-skip'){z.i++;z.show=false;if(z.i>=z.ids.length)quizFinished(z)}
   else if(a==='quiz-end')ui.quiz=null;
   render();const el=document.getElementById('quiz');if(el)el.scrollIntoView({block:'nearest'});
 }
@@ -89,3 +93,101 @@ function enhanceCode(){
 window.addEventListener('hashchange',()=>{
   if(location.hash==='#quiz'&&CUR==='interview'&&!ui.quiz){if(startQuiz('all',10))render()}
 });
+
+/* =========================================================
+   CELEBRATIONS: mini bursts on every tick, popups for bigger wins
+   ========================================================= */
+const CEL={q:[],busy:false};
+const CHEER=['Nice!','Boom!','Great job!','Crushed it!','Keep it up!','One step closer!','Yes!','Sharp work!','Locked in!','Well done!'];
+const cheer=()=>CHEER[Math.floor(Math.random()*CHEER.length)];
+const celOn=()=>S.celebrate!==false;
+const calm=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const COLORS=['#4f46e5','#7c3aed','#16a34a','#f59e0b','#dc2626','#2563eb','#ec4899'];
+
+function confettiBurst(n){
+  if(calm())return;
+  const box=document.createElement('div');box.className='cf-box';
+  for(let i=0;i<n;i++){
+    const s=document.createElement('i');s.className='cf';
+    s.style.left=(5+Math.random()*90)+'vw';
+    s.style.background=COLORS[i%COLORS.length];
+    s.style.setProperty('--dx',(Math.random()*240-120)+'px');
+    s.style.setProperty('--rot',(Math.random()*720-360)+'deg');
+    s.style.animationDuration=(1.6+Math.random()*1.6)+'s';
+    s.style.animationDelay=(Math.random()*.35)+'s';
+    box.appendChild(s);
+  }
+  document.body.appendChild(box);setTimeout(()=>box.remove(),3800);
+}
+function miniBurst(rect,text){
+  if(!celOn())return;
+  const x=rect?rect.left+rect.width/2:window.innerWidth/2,y=rect?rect.top:window.innerHeight/2;
+  const f=document.createElement('div');f.className='xpfloat';f.textContent=text;
+  f.style.left=Math.min(Math.max(x,70),window.innerWidth-70)+'px';f.style.top=Math.max(y-6,40)+'px';
+  document.body.appendChild(f);setTimeout(()=>f.remove(),1500);
+  if(calm())return;
+  for(let i=0;i<10;i++){
+    const p=document.createElement('i');p.className='cp';
+    const a=Math.PI*2*i/10;
+    p.style.left=x+'px';p.style.top=y+'px';p.style.background=COLORS[i%COLORS.length];
+    p.style.setProperty('--dx',Math.cos(a)*(30+Math.random()*30)+'px');p.style.setProperty('--dy',Math.sin(a)*(30+Math.random()*30)+'px');
+    document.body.appendChild(p);setTimeout(()=>p.remove(),900);
+  }
+}
+function celebrate(o){
+  if(!celOn())return;
+  CEL.q.push(o);if(!CEL.busy)celNext();
+}
+function celNext(){
+  const o=CEL.q.shift();
+  if(!o){CEL.busy=false;return}
+  CEL.busy=true;
+  const d=document.createElement('div');d.className='cel'+(o.big?' big':'');
+  d.innerHTML=`<div class="cel-card" role="status" aria-live="polite"><div class="cel-emoji">${o.emoji}</div><div class="cel-title">${esc(o.title)}</div>${o.sub?`<div class="cel-sub">${esc(o.sub)}</div>`:''}${o.xp?`<div class="cel-xp">+${o.xp} XP</div>`:''}<button class="btn" type="button">Keep going 🚀</button></div>`;
+  document.body.appendChild(d);
+  confettiBurst(o.big?70:36);
+  let t;const close=()=>{clearTimeout(t);if(d.classList.contains('out'))return;d.classList.add('out');setTimeout(()=>{d.remove();celNext()},220)};
+  t=setTimeout(close,o.big?4600:3200);
+  d.addEventListener('click',close);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const c=document.querySelector('.cel');if(c)c.click()}});
+
+/* ---------- completion detection ---------- */
+const dayComplete=(w,d)=>{const m=WEEKS[w-1].days[d].filter(t=>t.tag==='M');return m.length>0&&m.every(t=>S.done[t.id])};
+const weekComplete=w=>{const p=prog(weekIds(w,true));return p.t>0&&p.d===p.t};
+const groupComplete=(kind,g)=>{
+  const ids=kind==='topic'?tIds(g):kind==='proj'?pIds(PROJECTS.find(p=>p.id===g)):qIds(g);
+  const p=prog(ids,true);return p.t>0&&p.d===p.t};
+function doneStates(id){
+  const r=REG[id];
+  if(r.kind==='task'){const m=id.match(/^w(\d+)d(\d)t/),w=+m[1],d=+m[2];return {w,d,day:dayComplete(w,d),week:weekComplete(w)}}
+  if(r.kind==='topic'||r.kind==='proj'||r.kind==='q')return {grp:groupComplete(r.kind,r.g)};
+  return {};
+}
+function bonus(key,xp){if(!S.bonus)S.bonus={};if(S.bonus[key])return 0;S.bonus[key]=xp;return xp}
+
+/* big wins: returns true if a popup was queued */
+function celebrateWins(id,b,a){
+  const r=REG[id];
+  if(r.kind==='task'){
+    if(!b.week&&a.week){
+      const x=bonus('week'+a.w,50),w=WEEKS[a.w-1];
+      celebrate({big:true,emoji:'🏁',title:`Week ${a.w} complete!`,sub:`${w.title}. Deliverable: ${w.deliver}`,xp:x});return true}
+    if(!b.day&&a.day){const x=bonus(`day${a.w}-${a.d}`,10);celebrate({emoji:'🌟',title:`${DAYN[a.d]} of Week ${a.w} complete!`,sub:'All must-do tasks done. Nice consistency.',xp:x});return true}
+  }else if(!b.grp&&a.grp){
+    const label={topic:()=>TOPICS.find(t=>t.id===r.g).name,proj:()=>PROJECTS.find(p=>p.id===r.g).name,q:()=>QA[r.g].name+' interview questions'}[r.kind]();
+    const x=bonus(r.kind+r.g,{topic:20,proj:40,q:30}[r.kind]);
+    celebrate({big:r.kind!=='topic',emoji:{topic:'🧠',proj:'🚀',q:'🎤'}[r.kind],title:{topic:'Topic mastered!',proj:'Project shipped!',q:'Question bank complete!'}[r.kind],sub:label,xp:x});return true}
+  return false;
+}
+function celebrateItem(id,before,rect){
+  const a=doneStates(id);
+  if(!celebrateWins(id,before,a))miniBurst(rect,`${cheer()} +${REG[id].xp} XP`);
+  else miniBurst(rect,`+${REG[id].xp} XP`);
+}
+function celebratePrac(id,before,rect){
+  const m=id.match(/^pr:(\d+):(\d):/),n=+m[1],d=+m[2];
+  const all=GUIDES[n].days[d].practice.every((q,i)=>S.prac[`pr:${n}:${d}:${i}`]);
+  miniBurst(rect,`${cheer()} +3 XP`);
+  if(all){const x=bonus(`prac${n}-${d}`,10);if(x)celebrate({emoji:'✍️',title:'All practice solved!',sub:`${DAYN[d]} of Week ${n}`,xp:x})}
+}

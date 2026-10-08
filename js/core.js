@@ -2,7 +2,7 @@
    STATE / REGISTRY
    ========================================================= */
 const KEY='da-quest-v1';
-let S={done:{},flag:{},prac:{},days:{},apps:[],badges:{},theme:null,start:null,mustOnly:false,lvl:0};
+let S={done:{},flag:{},prac:{},bonus:{},days:{},apps:[],badges:{},theme:null,start:null,mustOnly:false,lvl:0};
 try{const raw=localStorage.getItem(KEY);if(raw)Object.assign(S,JSON.parse(raw))}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const ui={open:{},tag:'all',tq:''};
@@ -40,6 +40,7 @@ function calc(){
     if(r.tag==='M'){mTot+=r.xp;if(d)mDone+=r.xp}
     const o=k[r.kind]||(k[r.kind]={d:0,t:0,md:0,mt:0});o.t++;if(d)o.d++;if(r.tag==='M'){o.mt++;if(d)o.md++}}
   xp+=3*Object.keys(S.prac).length;   // practice questions from the week guides
+  xp+=Object.values(S.bonus||{}).reduce((s,v)=>s+v,0);   // completion bonuses (day, week, topic, project, bank)
   return {xp,ready:mTot?mDone/mTot:0,k};
 }
 function prog(ids,mustOnly){let d=0,t=0;ids.forEach(id=>{const r=REG[id];if(mustOnly&&r.tag!=='M')return;t++;if(S.done[id])d++});return {d,t,p:t?d/t:0}}

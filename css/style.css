@@ -184,3 +184,26 @@ ol.steps>li::before{content:counter(s);position:absolute;left:0;top:1px;width:24
 @media print{aside,.top,#rprog,.copybtn,.qa-actions,.dnav{display:none!important}.app{display:block}#view{max-width:none}}
 @media (max-width:860px){.dnav{top:96px}}
 .skip:focus{left:8px;top:8px;z-index:100;background:var(--brand);color:#fff;padding:6px 12px;border-radius:8px}
+
+/* ---- celebrations ---- */
+.cel{position:fixed;inset:0;z-index:120;display:grid;place-items:center;background:rgba(10,12,30,.45);animation:celfade .2s ease-out;cursor:pointer}
+.cel.out{opacity:0;transition:opacity .2s}
+@keyframes celfade{from{opacity:0}}
+.cel-card{background:var(--card);color:var(--ink);border-radius:22px;padding:26px 34px 22px;max-width:min(440px,90vw);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.45);animation:celpop .45s cubic-bezier(.2,1.4,.4,1)}
+.cel.big .cel-card{border:3px solid var(--warn);box-shadow:0 0 0 6px color-mix(in srgb,var(--warn) 25%,transparent),0 24px 70px rgba(0,0,0,.5)}
+@keyframes celpop{from{transform:scale(.6) translateY(20px);opacity:0}}
+.cel-emoji{font-size:64px;line-height:1.1;animation:celbounce 1s ease-in-out .2s 2}
+.cel.big .cel-emoji{font-size:78px}
+@keyframes celbounce{50%{transform:translateY(-14px) scale(1.12)}}
+.cel-title{font-size:22px;font-weight:800;margin:8px 0 4px}
+.cel-sub{color:var(--mute);margin:0 0 8px}
+.cel-xp{display:inline-block;background:linear-gradient(90deg,var(--brand),var(--brand2));color:#fff;font-weight:800;border-radius:99px;padding:3px 16px;margin:4px 0 12px}
+.cel .btn{margin-top:4px}
+.cf-box{position:fixed;inset:0;z-index:125;pointer-events:none;overflow:hidden}
+.cf{position:absolute;top:-16px;width:9px;height:14px;border-radius:2px;animation:cffall 2.4s ease-in forwards}
+@keyframes cffall{to{transform:translate(var(--dx),108vh) rotate(var(--rot));opacity:.5}}
+.xpfloat{position:fixed;z-index:130;transform:translate(-50%,0);pointer-events:none;font-weight:800;font-size:15px;color:#fff;background:linear-gradient(90deg,var(--brand),var(--brand2));padding:4px 12px;border-radius:99px;box-shadow:0 4px 14px rgba(0,0,0,.3);white-space:nowrap;animation:xpup 1.4s ease-out forwards}
+@keyframes xpup{0%{opacity:0;transform:translate(-50%,10px) scale(.7)}15%{opacity:1;transform:translate(-50%,0) scale(1.08)}100%{opacity:0;transform:translate(-50%,-56px) scale(1)}}
+.cp{position:fixed;z-index:129;width:7px;height:7px;border-radius:50%;pointer-events:none;animation:cppop .8s ease-out forwards}
+@keyframes cppop{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+@media (prefers-reduced-motion:reduce){.cf-box,.cp{display:none}.cel-emoji,.cel-card,.xpfloat{animation:none}.xpfloat{opacity:1}}
