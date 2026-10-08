@@ -4,7 +4,7 @@
      PUT  -> { state, updatedAt, summary }   stored only if not older than what is saved.
              Always refused with 403 while impersonating, so viewing a user can never alter or record anything. */
 const { db } = require('./_lib/db');
-const { getSession, csrfOk, send, body } = require('./_lib/guard');
+const { getSession, csrfOk, send, body, fail } = require('./_lib/guard');
 
 const MAX_BYTES = 1000000;
 
@@ -54,7 +54,6 @@ module.exports = async (req, res) => {
       throw e;
     }
   } catch (e) {
-    console.error('progress error:', e && e.message);
-    return send(res, 500, { error: 'server error' });
+    return fail(res, e, 'progress');
   }
 };

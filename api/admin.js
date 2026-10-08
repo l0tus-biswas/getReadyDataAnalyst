@@ -10,7 +10,7 @@
    Impersonation never writes to the viewed user's data. Each start and stop is recorded in the audit log. */
 const { db, audit } = require('./_lib/db');
 const { hashPassword, signToken, sessionCookie, randomPassword, validEmail, cleanEmail, cleanName, validPassword } = require('./_lib/security');
-const { getSession, csrfOk, send, body, oid, publicUser } = require('./_lib/guard');
+const { getSession, csrfOk, send, body, oid, publicUser, fail } = require('./_lib/guard');
 
 const MONTH = 60 * 60 * 24 * 30, IMP_TTL = 60 * 60 * 2;
 
@@ -135,7 +135,6 @@ module.exports = async (req, res) => {
 
     return send(res, 404, { error: 'unknown action' });
   } catch (e) {
-    console.error('admin error:', e && e.message);
-    return send(res, 500, { error: 'server error' });
+    return fail(res, e, 'admin');
   }
 };

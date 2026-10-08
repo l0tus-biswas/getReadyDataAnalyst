@@ -33,10 +33,23 @@ function csrfOk(req) {
 }
 
 const send = (res, code, obj) => res.status(code).json(obj);
+
+/* Turns an unexpected error into a safe, helpful hint for whoever set up the server.
+   The full message goes to the server log only; the browser gets a short category. */
+function errInfo(e) {
+  const m = String((e && e.message) || '');
+  if (/MONGODB_URI is not set/i.test(m)) return { code: 'missing-mongodb-uri', hint: 'The MONGODB_URI environment variable is not set on the server. Add it in Vercel, then redeploy.' };
+  if (/SESSION_SECRET/i.test(m)) return { code: 'missing-session-secret', hint: 'The SESSION_SECRET environment variable is missing or shorter than 24 characters. Fix it in Vercel, then redeploy.' };
+  if (/authentication failed|bad auth|not authorized|Authentication/i.test(m)) return { code: 'db-auth', hint: 'MongoDB rejected the username or password in MONGODB_URI.' };
+  if (/Invalid scheme|Invalid connection string|URI|ENOTFOUND|querySrv/i.test(m)) return { code: 'db-uri', hint: 'MONGODB_URI looks wrong or the cluster address cannot be found.' };
+  if (/selection|timed out|ECONN|ETIMEDOUT|SSL|TLS|connect/i.test(m)) return { code: 'db-unreachable', hint: 'The server cannot reach MongoDB. In Atlas > Network Access, allow access from anywhere (0.0.0.0/0) so Vercel can connect.' };
+  return { code: 'server-error', hint: '' };
+}
+const fail = (res, e, tag) => { console.error(tag + ' error:', e && e.message); return send(res, 500, Object.assign({ error: 'server error' }, errInfo(e))); };
 const body = (req) => {
   const b = req.body;
   if (b && typeof b === 'object') return b;
   try { return JSON.parse(b || '{}'); } catch (e) { return {}; }
 };
 
-module.exports = { getSession, csrfOk, send, body, oid, publicUser };
+module.exports = { getSession, csrfOk, send, body, oid, publicUser, fail };

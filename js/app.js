@@ -47,7 +47,7 @@ function setTopH(){
   const th=t?t.offsetHeight:0,ih=ib?ib.offsetHeight:0;
   r.setProperty('--topH',th+'px');r.setProperty('--impH',ih+'px');r.setProperty('--stick',(th+ih)+'px');
 }
-function render(){const y=window.scrollY;$('#view').innerHTML=PAGE();renderSide();renderChrome();renderBottomNav();applySearch();if(typeof enhanceCode==='function')enhanceCode();setTopH();window.scrollTo(0,y)}
+function render(){if(!PAGE)return;const y=window.scrollY;$('#view').innerHTML=PAGE();renderSide();renderChrome();renderBottomNav();applySearch();if(typeof enhanceCode==='function')enhanceCode();setTopH();window.scrollTo(0,y)}
 async function boot(cur,fn){
   CUR=cur;
   const ok=await authInit();   // redirects to the login page when not signed in

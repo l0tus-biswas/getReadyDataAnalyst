@@ -5,7 +5,7 @@
    There is no sign-up, no "forgot password" and no change-password form: an admin creates accounts and sets or resets passwords. */
 const { db } = require('./_lib/db');
 const { verifyPassword, signToken, sessionCookie, cleanEmail } = require('./_lib/security');
-const { getSession, csrfOk, send, body, publicUser } = require('./_lib/guard');
+const { getSession, csrfOk, send, body, publicUser, fail } = require('./_lib/guard');
 
 const WEEK = 60 * 60 * 24 * 30;
 const MAX_FAILS = 8;   // failed sign-ins per email or per IP within 15 minutes
@@ -54,7 +54,6 @@ module.exports = async (req, res) => {
 
     return send(res, 404, { error: 'unknown action' });
   } catch (e) {
-    console.error('auth error:', e && e.message);
-    return send(res, 500, { error: 'server error' });
+    return fail(res, e, 'auth');
   }
 };

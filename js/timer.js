@@ -103,5 +103,5 @@ setInterval(tmTick,1000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save()});
 window.addEventListener('pagehide',()=>{save()});
 window.addEventListener('focus',()=>{
-  if(reloadState()){const ae=document.activeElement;if(!(ae&&/INPUT|TEXTAREA/.test(ae.tagName))&&typeof render==='function')render()}
+  if(reloadState()){const ae=document.activeElement;if(!(ae&&/INPUT|TEXTAREA/.test(ae.tagName))&&typeof render==='function'&&PAGE)render()}
 });

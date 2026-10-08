@@ -88,7 +88,11 @@ async function authInit(){
     document.getElementById('view').innerHTML='<div class="card"><h3>You are offline</h3><p>Connect once and sign in to use the app offline afterwards.</p></div>';return false;
   }
   if(r.status===401){goLogin();return false}
-  if(r.status!==200){document.getElementById('view').innerHTML='<div class="card"><h3>Something went wrong</h3><p>The server returned '+r.status+'. Try again in a moment.</p></div>';return false}
+  if(r.status!==200){
+    const hint=r.json&&r.json.hint?'<p><b>'+esc(r.json.hint)+'</b></p>':'<p>The server returned '+r.status+'. Try again in a moment.</p>';
+    document.getElementById('view').innerHTML='<div class="card"><h3>The server could not start</h3>'+hint+(r.json&&r.json.code?'<p class="sm">Code: '+esc(r.json.code)+'</p>':'')+'<p><button class="btn" onclick="location.reload()">Try again</button></p></div>';
+    return false;
+  }
   AUTH.mode='user';AUTH.user=r.json.user;AUTH.admin=r.json.admin;AUTH.impersonating=!!r.json.impersonating;
   if(AUTH.impersonating){
     READONLY=true;document.body.classList.add('ro');
