@@ -24,7 +24,22 @@ function pageDashboard(){
    const t=due||nxt,fl=Object.keys(S.flag).length;
    nextHtml=`<div class="card next-card"><div class="sm">${due?(due.w*7-7+due.d<idx?'⏪ CATCH UP FIRST':'👉 DO THIS NEXT'):(t?'👉 NEXT IN YOUR PLAN':'')}</div>
    ${t?`<p style="margin:4px 0 10px"><b>Week ${t.w} · ${DAYN[t.d]} (${dayDate(t.w,t.d)}):</b> ${esc(t.text)}</p><div class="qa-actions" style="margin:0"><a class="btn" href="week-${t.w}.html#day-${t.d}" style="text-decoration:none">📖 Open the guide for this</a>`:'<p>🎉 All must-do plan tasks are complete.</p><div class="qa-actions" style="margin:0">'}
-   <a class="btn ghost" href="interview.html#quiz" style="text-decoration:none">🎲 5-minute quiz</a>${fl?`<a class="btn ghost" href="interview.html" style="text-decoration:none">⭐ Review ${fl} flagged</a>`:''}</div></div>`}
+   <a class="btn ghost" href="interview.html#quiz" style="text-decoration:none">🎲 5-minute quiz</a>${fl?`<a class="btn ghost" href="review.html" style="text-decoration:none">🔁 Review ${fl} flagged</a>`:''}</div></div>`}
+  // extras: daily goal, spaced-repetition reviews, weekly check-in, carried-over tasks
+  let extras='';
+  {
+    const sec=(actOf().sec||0),g=(S.goal||60)*60,rc=srCounts(),cd=ciDue();
+    const carried=S.carry.filter(id=>REG[id]&&!S.done[id]).slice(0,6);
+    extras=`<div class="grid g2" style="margin-bottom:14px">
+      <div class="card" style="margin:0"><div class="sm">🎯 TODAY'S GOAL · active study time</div>
+        <div style="font-size:26px;font-weight:800">${fmtH(sec)} <span class="sm" style="font-size:13px">/ ${S.goal||60} min</span></div>${bar(Math.min(1,sec/g))}
+        <p class="sm" style="margin:6px 0 0">${sec>=g?'✅ Goal reached!':'Counts only while you tap, type, tick or answer. Scrolling does not count.'} <a href="progress.html">See progress →</a></p></div>
+      <div class="card" style="margin:0"><div class="sm">🔁 SPACED REVIEW</div>
+        ${rc.due?`<div style="font-size:26px;font-weight:800" class="bad">${rc.due} due</div><p class="sm" style="margin:2px 0 8px">About ${Math.max(2,Math.round(Math.min(rc.due,15)*.8))} minutes. Reviewing on time is what makes answers stick.</p><a class="btn" href="review.html" style="text-decoration:none">▶ Start review</a>`
+        :`<div style="font-size:22px;font-weight:800" class="ok">All caught up ✅</div><p class="sm" style="margin:2px 0 0">${rc.total?`${rc.total} questions in rotation, ${rc.tom} due tomorrow.`:'Flag or prepare questions and they will be scheduled here.'}</p>`}</div></div>
+    ${cd?`<div class="card next-card" style="border-left-color:var(--brand)"><b>📋 Weekly check-in ready for Week ${cd}</b><p class="sm" style="margin:4px 0 8px">Two minutes to look back, carry leftovers forward and reset.</p><a class="btn" href="checkin.html" style="text-decoration:none">Open check-in</a></div>`:''}
+    ${carried.length?`<div class="card"><h3 style="margin-top:0">🧳 Carried over from earlier weeks</h3>${carried.map(id=>{const m=id.match(/^w(\d+)d(\d)t(\d+)$/),t=WEEKS[+m[1]-1].days[+m[2]][+m[3]];return chk(id,t.text,t.tag)}).join('')}</div>`:''}`;
+  }
   return `
   <div class="card hero">${ring(c.ready)}
     <div style="flex:1;min-width:230px">
@@ -36,6 +51,7 @@ function pageDashboard(){
     </div>
   </div>
   ${nextHtml}
+  ${extras}
   <div class="grid g4" style="margin-bottom:14px">
     <div class="card stat"><b>⭐ ${c.xp}</b><span>XP earned</span></div>
     <div class="card stat"><b>🔥 ${streak()}</b><span>day streak (best ${bestStreak()})</span></div>

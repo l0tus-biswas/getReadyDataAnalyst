@@ -24,7 +24,7 @@ function pageWeek(n){
     const dp=d.practice.map((q,i)=>`pr:${n}:${di}:${i}`),pd2=dp.filter(i=>S.prac[i]).length;
     const key=`w${n}d${di}`,mAll=tasks.filter(t=>t.tag==='M'),mDone=mAll.length>0&&mAll.every(t=>S.done[t.id]);
     h+=`<details class="gday" data-k="${key}" id="day-${di}" ${hasOpen(key,di===(today<0?0:today))}>
-    <summary><span class="dn">${DAYN[di]}</span><span class="sm">${dayDate(n,di)}</span><span style="flex:1">${esc(d.title)}</span>${mDone?'<span class="ok">✓</span>':''}<span class="sm">${esc(d.time)} · tasks ${td}/${tasks.length} · practice ${pd2}/${dp.length}</span></summary>
+    <summary><span class="dn">${DAYN[di]}</span><span class="sm">${dayDate(n,di)}</span><span style="flex:1">${esc(d.title)}</span>${mDone?'<span class="ok">✓</span>':''}<span class="sm">${esc(d.time)} · tasks ${td}/${tasks.length} · practice ${pd2}/${dp.length}${S.notes[`w${n}d${di}`]?' · 📝':''}</span></summary>
     <div class="body">
       <nav class="dnav">${[['study','📖 Study'],['how','🛠️ Steps'],['ex','💡 Example'],['prac','✍️ Practice'],['iq','🎤 Interview']].map(s=>`<a href="#${key}-${s[0]}" data-act="goto:${key}-${s[0]}">${s[1]}</a>`).join('')}</nav>
       <div class="gsec"><h4>✅ Plan tasks for ${DAYN[di]}</h4>${tasks.map(t=>chk(t.id,t.text,t.tag)).join('')}</div>
@@ -40,6 +40,7 @@ function pageWeek(n){
         ${d.important.map((q,i)=>`<details class="pq iq" data-k="${key}i${i}" ${hasOpen(key+'i'+i,false)}><summary><span class="sm">Q${i+1}</span><span style="flex:1">${q[0]}</span></summary><div class="body">${q[1]}</div></details>`).join('')}
       </div>
       ${d.resources&&d.resources.length?`<div class="gsec"><h4>🔗 Resources</h4><ul>${d.resources.map(r=>`<li><a href="${r[1]}" target="_blank" rel="noopener">${esc(r[0])}</a></li>`).join('')}</ul></div>`:''}
+      <div class="gsec"><h4>📝 My notes for ${DAYN[di]}</h4>${noteBox(`w${n}d${di}`,3)}</div>
       <div class="note gdone">🏁 <b>${esc(d.done)}</b></div>
       <div class="qa-actions daybar">
         ${mAll.length&&!mDone?`<button class="btn" data-act="daydone:${n}:${di}">✅ Mark all must-do tasks for ${DAYN[di]} complete</button>`:''}

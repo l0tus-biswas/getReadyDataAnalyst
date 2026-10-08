@@ -2,9 +2,20 @@
    STATE / REGISTRY
    ========================================================= */
 const KEY='da-quest-v1';
-let S={done:{},flag:{},prac:{},bonus:{},days:{},apps:[],badges:{},theme:null,start:null,mustOnly:false,lvl:0};
+const defaultState=()=>({done:{},flag:{},prac:{},bonus:{},sr:{},mocks:[],checkins:{},carry:[],notes:{},act:{},goal:60,days:{},apps:[],badges:{},theme:null,start:null,mustOnly:false,lvl:0});
+let S=defaultState();
 try{const raw=localStorage.getItem(KEY);if(raw)Object.assign(S,JSON.parse(raw))}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+let LASTSAVED='';
+const save=()=>{try{LASTSAVED=JSON.stringify(S);localStorage.setItem(KEY,LASTSAVED)}catch(e){}};
+// another tab may have saved newer progress: re-read it when this tab regains focus
+function reloadState(){
+  try{const raw=localStorage.getItem(KEY);if(!raw||raw===LASTSAVED)return false;
+    const fresh=Object.assign(defaultState(),JSON.parse(raw));
+    Object.keys(S).forEach(k=>delete S[k]);Object.assign(S,fresh);LASTSAVED=raw;return true}catch(e){return false}
+}
+// per-day activity log: active seconds and counters (used by the heatmap, goals and summaries)
+function actOf(date){const d=date||todayS();return S.act[d]||(S.act[d]={sec:0,tasks:0,prac:0,q:0,rev:0,mock:0})}
+function logAct(field,n){const a=actOf();a[field]=(a[field]||0)+(n||1)}
 const ui={open:{},tag:'all',tq:''};
 /* Normalise shapes: questions may be old arrays [q,a] or new objects; topic items may lack meta. */
 const QDEF={short:'',lvl:'M',freq:2,follow:[],mistake:'',tags:[]};

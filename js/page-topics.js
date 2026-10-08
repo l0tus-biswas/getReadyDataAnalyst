@@ -12,7 +12,7 @@ function pageTopics(){
     ${next?`<div class="note" style="margin:6px 0">👉 <b>Next up:</b> ${esc(next[0])}</div>`:'<div class="note" style="margin:6px 0">✅ All must-have topics here are done.</div>'}
     ${tp.items.filter(it=>(ui.tag==='all'||it[1]===ui.tag)&&(!ui.tw||it[3].w>=2)&&(!ui.tn||!S.done[it.id])).map(it=>{
       const m=it[3],hasInfo=m.depth||m.why||m.ex||m.q;
-      return `<div class="titem">${chk(it.id,it[0],it[1],it[2])}
+      return `<div class="titem" id="${it.id}">${chk(it.id,it[0],it[1],it[2])}
       <div class="tmeta"><span class="fr" title="Interview weight">${flames(m.w)}</span>${m.week?`<a class="sm" href="week-${m.week}.html">Week ${m.week} →</a>`:''}</div>
       ${hasInfo?`<details class="tinfo" data-k="ti-${it.id}" ${hasOpen('ti-'+it.id,false)}><summary>Details</summary><div class="body">
         ${m.depth?`<p><b>How deep:</b> ${esc(m.depth)}</p>`:''}${m.why?`<p><b>Why it matters:</b> ${esc(m.why)}</p>`:''}

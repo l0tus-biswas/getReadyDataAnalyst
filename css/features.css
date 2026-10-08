@@ -1,0 +1,128 @@
+/* Review, mock interview, check-in, progress, notes, search, timer + phone/iPad layout */
+
+/* ---------- top bar: search + timer ---------- */
+.top{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.top::-webkit-scrollbar{display:none}
+.top>*{flex:none}
+#chrome{flex-wrap:nowrap!important}
+.topsearch{margin:0}
+.topsearch input{width:150px;font-size:14px;padding:6px 10px;border-radius:99px}
+.nbadge{margin-left:auto;background:var(--bad);color:#fff;font-size:11px;font-weight:800;border-radius:99px;padding:1px 7px}
+aside a.nav{position:relative}
+.pill{white-space:nowrap}
+
+/* ---------- study timer ---------- */
+.tpill{cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--ink)}
+.tpill .dot{width:9px;height:9px;border-radius:50%;background:var(--mute)}
+.tpill.active .dot{background:var(--ok);box-shadow:0 0 0 0 rgba(22,163,74,.6);animation:tpulse 1.6s infinite}
+@keyframes tpulse{70%{box-shadow:0 0 0 7px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
+.tpanel{position:fixed;z-index:70;top:calc(var(--topH,52px) + 6px);right:10px;width:min(340px,calc(100vw - 20px));background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px rgba(0,0,0,.35);padding:14px;max-height:calc(100vh - 80px);overflow:auto}
+.tp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.tp-big{font-size:32px;font-weight:800;line-height:1.1;margin:2px 0 6px}
+.tp-state{font-size:13px;font-weight:600;margin:6px 0}
+.tp-state.active{color:var(--ok)}.tp-state.idle{color:var(--mute)}
+.tp-focus{background:var(--chip);border-radius:12px;padding:10px;margin:8px 0}
+.tp-how summary{font-size:13px;padding:6px 0;box-shadow:none}
+details.tp-how{box-shadow:none;border:none;background:transparent;margin:0}
+
+/* ---------- mock interview ---------- */
+.mock-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.mock-time{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:2px 16px}
+.mock-time.bad{color:var(--bad);border-color:var(--bad)}
+.note-box{width:100%;font-family:inherit;font-size:15px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);padding:10px;resize:vertical}
+.note-saved{display:block;min-height:18px}
+
+/* ---------- check-in ---------- */
+.chip.mood{font-size:24px;padding:4px 14px}
+
+/* ---------- progress ---------- */
+.hm-wrap{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.hm-days{display:grid;grid-template-rows:repeat(7,14px);gap:3px;font-size:10px;color:var(--mute);align-items:center}
+.hm{display:grid;grid-template-rows:repeat(7,14px);grid-auto-flow:column;grid-auto-columns:14px;gap:3px}
+i.hm{display:inline-block;width:14px;height:14px;border-radius:3px;background:var(--chip)}
+.hm i.hm,.hm .hm{width:14px;height:14px}
+.hm .l-1{visibility:hidden}
+.hm .l0,i.hm.l0{background:var(--chip)}
+.hm .l1,i.hm.l1{background:color-mix(in srgb,var(--ok) 30%,var(--chip))}
+.hm .l2,i.hm.l2{background:color-mix(in srgb,var(--ok) 52%,var(--chip))}
+.hm .l3,i.hm.l3{background:color-mix(in srgb,var(--ok) 76%,var(--chip))}
+.hm .l4,i.hm.l4{background:var(--ok)}
+.hm .rest{outline:2px dashed var(--mute);outline-offset:-3px}
+.hm-legend{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:6px}
+.weak{padding:10px 0;border-bottom:1px solid var(--line)}
+.weak.top{background:color-mix(in srgb,var(--warn) 8%,transparent);border-radius:10px;padding:10px;margin:4px 0}
+.spark{display:flex;align-items:flex-end;gap:8px;height:120px}
+.sp-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:11px;color:var(--mute)}
+.sp-col i{display:block;width:100%;max-width:34px;background:linear-gradient(180deg,var(--brand),var(--brand2));border-radius:6px 6px 0 0}
+
+/* ---------- search ---------- */
+.sres{padding:8px 0;border-bottom:1px solid var(--line)}
+mark{background:color-mix(in srgb,var(--warn) 45%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+
+/* ---------- bottom navigation (phones and iPad portrait) ---------- */
+#bnav{display:none}
+@media (max-width:860px){
+  #bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--card);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.12)}
+  #bnav a,#bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:0;font-size:11px;color:var(--mute);text-decoration:none;background:none;border:none;padding:4px 0;position:relative;min-height:48px;justify-content:center}
+  #bnav a.on{color:var(--brand);font-weight:700}
+  #bnav span{font-size:20px;line-height:1.1}
+  #bnav .nbadge{position:absolute;top:0;right:calc(50% - 26px);margin:0}
+  body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
+  .hide-sm{display:none!important}
+  .topsearch input{width:110px}
+  .top{padding:8px 12px;gap:8px}
+  #view{padding:14px 14px 40px}
+  .toast{bottom:calc(76px + env(safe-area-inset-bottom))}
+  .tpanel{right:8px}
+}
+
+/* ---------- general responsiveness ---------- */
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr))}
+.days{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
+.dnav{top:var(--topH,52px)}
+.gsec [id],.gday{scroll-margin-top:calc(var(--topH,52px) + 56px)}
+img,svg,video{max-width:100%}
+.body table,.gex table,.card table{display:block;overflow-x:auto;max-width:100%}
+.gex,.full{overflow-wrap:anywhere}
+@media (max-width:860px){
+  .gday>summary,details.qitem>summary{align-items:flex-start}
+  .gday>summary .sm{width:100%}
+  .hero{gap:14px}
+  .ring{margin:0 auto}
+  .quiz .qa-actions .btn,.mock-head+.bar+.card .qa-actions .btn{flex:1 1 140px}
+  .mock-time{font-size:28px}
+  h2{font-size:21px}
+  .grid.g4{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:420px){
+  .tpill{font-size:12px;padding:3px 9px}
+  .qa-actions{gap:6px}
+  .cel-card{padding:20px 18px 16px}
+}
+/* touch devices: comfortable tap targets, no iOS zoom on inputs */
+@media (pointer:coarse){
+  .row{min-height:44px;padding:10px 8px}
+  .row .box{width:24px;height:24px}
+  .chip,.btn,.ib{min-height:40px}
+  .chip{padding:8px 14px}
+  details>summary{min-height:44px}
+  input[type=text],input[type=date],input[type=search],input[type=password],select,textarea{font-size:16px}
+  .copybtn{padding:6px 12px;font-size:12px}
+}
+@media (min-width:861px) and (max-width:1100px){
+  aside{width:210px}
+  #view{padding:18px 16px 50px}
+}
+@media (display-mode:standalone){
+  body{overscroll-behavior-y:none}
+  .top{padding-top:calc(10px + env(safe-area-inset-top))}
+}
+
+/* phone top bar: let the search box shrink so the theme button is always visible; readable status text on the hero */
+.hero .ok,.hero .bad{color:#fff;font-weight:700}
+@media (max-width:860px){
+  .top>.sp{display:none}
+  .topsearch{flex:1 1 90px!important;min-width:60px}
+  .topsearch input{width:100%}
+}

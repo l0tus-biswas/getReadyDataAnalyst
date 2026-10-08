@@ -2,9 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Week 9 Guide · Data Analyst Quest</title>
+<meta name="theme-color" content="#4f46e5">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DA Quest">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/features.css">
 </head>
 <body>
 <a class="skip" href="#view">Skip to content</a>
@@ -15,6 +24,7 @@
     <button class="ib" id="burger" data-act="nav-toggle" aria-label="Menu">☰</button>
     <div id="chrome" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"></div>
     <div class="sp"></div>
+    <form class="topsearch" action="search.html" method="get" role="search"><input id="topsearch" name="q" type="search" placeholder="Search ( / )" aria-label="Search"></form>
     <button class="ib" data-act="theme" aria-label="Toggle theme">🌓</button>
   </div>
   <div id="view"></div>
@@ -32,6 +42,9 @@
 <script src="js/core.js"></script>
 <script src="js/app.js"></script>
 <script src="js/ux.js"></script>
+<script src="js/sr.js"></script>
+<script src="js/notes.js"></script>
+<script src="js/timer.js"></script>
 <script src="js/guides-init.js"></script>
 <script src="js/guide-w9.js"></script>
 <script src="js/page-week.js"></script>

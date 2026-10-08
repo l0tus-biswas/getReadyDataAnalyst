@@ -1,0 +1,21 @@
+{
+  "name": "Get Ready, Data Analyst",
+  "short_name": "DA Quest",
+  "description": "A 12-week plan, interview practice and progress tracker for becoming a job-ready data analyst.",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f1220",
+  "theme_color": "#4f46e5",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Review", "url": "review.html", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Mock interview", "url": "mock.html", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Quick quiz", "url": "interview.html#quiz", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

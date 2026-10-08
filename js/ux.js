@@ -9,6 +9,11 @@ const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(M
 
 /* ---------- quiz (flashcards) ---------- */
 function startQuiz(scope,n){
+  if(scope==='review'){
+    const due=srDue(15);
+    if(!due.length){toast('Nothing due for review. You are all caught up! 🎉');return false}
+    ui.quiz={ids:due,i:0,show:false,got:0,rev:0,scope,mode:'review'};return true;
+  }
   let ids=scope==='all'?Object.keys(QA).flatMap(qIds):qIds(scope);
   ids=ids.filter(i=>!S.done[i]);
   if(scope!=='all'&&ui.ql&&ui.ql!=='all')ids=ids.filter(i=>qOf(i).q.lvl===ui.ql);
@@ -21,10 +26,10 @@ function startQuiz(scope,n){
 function quizCard(){
   const z=ui.quiz;if(!z)return '';
   if(z.i>=z.ids.length){
-    return `<div class="card quiz" id="quiz"><h3 style="margin-top:0">🏁 Quiz finished</h3><p>✅ Got it: <b>${z.got}</b> · 🔁 Need revision: <b>${z.rev}</b></p>
+    return `<div class="card quiz" id="quiz"><h3 style="margin-top:0">🏁 ${z.mode==='review'?'Review':'Quiz'} finished</h3><p>✅ Got it: <b>${z.got}</b> · 🔁 Need revision: <b>${z.rev}</b></p>
     <div class="qa-actions"><button class="btn" data-act="quiz-new">Another round</button><button class="btn ghost" data-act="quiz-end">Close</button></div></div>`}
   const {k,q}=qOf(z.ids[z.i]);
-  return `<div class="card quiz" id="quiz"><div class="sm">🎲 QUIZ · ${z.i+1} of ${z.ids.length} · ${QA[k].emoji} ${esc(QA[k].name)} · ${lvlBadge(q.lvl)} <span class="sm">(keys: Space = show, 1 = got it, 2 = revise, S = skip, Esc = close)</span></div>
+  return `<div class="card quiz" id="quiz"><div class="sm">${z.mode==='review'?'🔁 REVIEW':'🎲 QUIZ'} · ${z.i+1} of ${z.ids.length} · ${QA[k].emoji} ${esc(QA[k].name)} · ${lvlBadge(q.lvl)} <span class="sm">(keys: Space = show, 1 = got it, 2 = revise, S = skip, Esc = close)</span></div>
   <h3 class="qtext">${esc(q.q)}</h3>
   ${z.show?`${q.short?`<div class="say"><b>🗣️ Say it like this:</b><br>${q.short}</div>`:''}<div class="full">${q.a}</div>
     <div class="qa-actions"><button class="btn" data-act="quiz-got">✅ Got it (1)</button><button class="btn ghost" data-act="quiz-rev">🔁 Need revision (2)</button></div>`
@@ -33,14 +38,18 @@ function quizCard(){
 }
 function quizFinished(z){
   const n=z.ids.length,perfect=z.got===n&&n>0;
-  celebrate({big:perfect,emoji:perfect?'💯':'🎉',title:perfect?'Perfect round!':'Quiz complete!',sub:`${z.got} of ${n} answered confidently${z.rev?`, ${z.rev} flagged for revision`:''}.`,xp:z.got>=Math.ceil(n/2)?bonus('quiz'+Date.now(),perfect?15:5):0});
+  celebrate({big:perfect,emoji:perfect?'💯':'🎉',title:z.mode==='review'?(perfect?'Review: all remembered!':'Review complete!'):(perfect?'Perfect round!':'Quiz complete!'),sub:`${z.got} of ${n} answered confidently${z.rev?`, ${z.rev} flagged for revision`:''}.`,xp:z.got>=Math.ceil(n/2)?bonus('quiz'+Date.now(),perfect?15:5):0});
 }
 function quizAct(a){
   const z=ui.quiz;if(!z)return;
   const id=z.ids[z.i];
   if(a==='quiz-show')z.show=!z.show;
-  else if(a==='quiz-got'&&id){const rect=document.querySelector('#quiz .btn')?document.querySelector('#quiz .btn').getBoundingClientRect():null,b=doneStates(id);S.done[id]=1;delete S.flag[id];S.days[todayS()]=1;z.got++;z.i++;z.show=false;celebrateItem(id,b,rect);if(z.i>=z.ids.length)quizFinished(z);afterChange()}
-  else if(a==='quiz-rev'&&id){S.flag[id]=1;z.rev++;z.i++;z.show=false;save();if(z.i>=z.ids.length)quizFinished(z)}
+  else if(a==='quiz-got'&&id){
+    const qb=document.querySelector('#quiz .btn'),rect=qb?qb.getBoundingClientRect():null,first=!S.done[id],b=doneStates(id);
+    S.done[id]=1;S.days[todayS()]=1;srGood(id);z.got++;z.i++;z.show=false;
+    if(first){logAct('q');celebrateItem(id,b,rect)}else{logAct('rev');miniBurst(rect,cheer()+' 🔁')}
+    if(z.i>=z.ids.length)quizFinished(z);afterChange()}
+  else if(a==='quiz-rev'&&id){srBad(id);logAct('rev');S.days[todayS()]=1;z.rev++;z.i++;z.show=false;save();if(z.i>=z.ids.length)quizFinished(z)}
   else if(a==='quiz-skip'){z.i++;z.show=false;if(z.i>=z.ids.length)quizFinished(z)}
   else if(a==='quiz-end')ui.quiz=null;
   render();const el=document.getElementById('quiz');if(el)el.scrollIntoView({block:'nearest'});
