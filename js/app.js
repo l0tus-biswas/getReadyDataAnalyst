@@ -36,6 +36,19 @@ function afterChange(){
   save();
 }
 
+/* ---------------- reset ---------------- */
+function resetAll(){
+  const v=prompt('This permanently deletes ALL your progress: ticked tasks, XP, streaks, badges, practice, flagged questions and applications. The plan restarts today.\n\nThere is no undo. Type RESET to confirm:');
+  if(v===null)return false;
+  if(v.trim().toUpperCase()!=='RESET'){toast('Reset cancelled. You have to type RESET.');return false}
+  const keep={theme:S.theme,celebrate:S.celebrate};
+  try{localStorage.removeItem(KEY)}catch(e){}
+  S={done:{},flag:{},prac:{},bonus:{},days:{},apps:[],badges:{},theme:keep.theme,celebrate:keep.celebrate,start:todayS(),startExact:true,mustOnly:false,lvl:0};
+  ui.open={};ui.quiz=null;ui.tag='all';ui.tw=false;ui.tn=false;ui.ql='all';ui.qs='all';ui.qf=false;ui.tq='';ui.qq='';
+  save();render();toast('Everything has been reset. Fresh start! 🌱');
+  return true;
+}
+
 /* ---------------- events ---------------- */
 document.addEventListener('change',e=>{
   const t=e.target;
@@ -82,6 +95,7 @@ document.addEventListener('click',e=>{
   else if(a==='app-del'){S.apps.splice(+arg,1);save();render()}
   else if(a==='setstart'){const v=$('#startd').value;if(v){S.start=v;S.startExact=true;save();toast('Day 1 is now '+dayDate(1,0));render()}}
   else if(a==='celeb-test'){const was=S.celebrate;S.celebrate=true;celebrate({big:true,emoji:'🎉',title:'This is how a win looks!',sub:'Finish a day, week, topic or project to see it for real.',xp:50});S.celebrate=was}
+  else if(a==='reset')resetAll();
   else if(a==='startoday'){S.start=todayS();S.startExact=true;save();toast('Day 1 is today. Let\'s go! 🚀');render()}
 });
 document.addEventListener('click',e=>{if(e.target.closest('#side a'))$('#side').classList.remove('open')});
