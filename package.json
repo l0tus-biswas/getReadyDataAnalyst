@@ -1,0 +1,14 @@
+{
+  "name": "data-analyst-quest",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Self-study tracker, 12-week plan and interview prep for becoming a data analyst. Static site plus one serverless API for optional progress sync.",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "mongodb": "^7.7.0"
+  }
+}

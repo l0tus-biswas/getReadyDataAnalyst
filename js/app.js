@@ -1,0 +1,88 @@
+/* App shell: navigation, rendering, gamification checks, events */
+const NAV=[['index','🏠','Dashboard'],['plan','📅','12-Week Plan'],['topics','📚','Topics & Skills'],['interview','🎤','Interview Q&A'],['interview.html#quiz','🎲','Quick Quiz'],['sql-lab','⌨️','SQL Lab'],['projects','🧪','Projects'],['jobs','💼','Job Hunt'],['resources','🔗','Resources'],['settings','⚙️','Settings']];
+let PAGE=null,CUR='';
+function renderSide(){
+  const inQA=CUR==='interview'||CUR.startsWith('qa-'),inPlan=CUR==='plan'||CUR.startsWith('week-');
+  $('#side').innerHTML='<h1>🎯 DA Quest</h1>'+NAV.map(n=>{
+    const on=CUR===n[0]||(n[0]==='interview'&&inQA)||(n[0]==='plan'&&inPlan);
+    return '<a class="nav '+(on?'on':'')+'" href="'+(n[0].includes('.')?n[0]:n[0]+'.html')+'">'+n[1]+' '+n[2]+'</a>'+
+      (n[0]==='interview'&&inQA?'<div class="sub">'+QORDER.map(k=>'<a class="'+(CUR==='qa-'+k?'on':'')+'" href="qa-'+k+'.html">'+QA[k].emoji+' '+QA[k].name+'</a>').join('')+'</div>':'')+
+      (n[0]==='plan'&&inPlan?'<div class="sub">'+WEEKS.map(w=>'<a class="'+(CUR==='week-'+w.n?'on':'')+'" href="week-'+w.n+'.html">W'+w.n+' · '+w.title+'</a>').join('')+'</div>':'')}).join('')}
+function renderChrome(){const c=calc(),L=LEVELS[level(c.ready)];
+  $('#chrome').innerHTML='<span class="pill">'+L[2]+' '+L[1]+'</span><span class="pill">⭐ '+c.xp+' XP</span><span class="pill">🔥 '+streak()+'</span><span class="pill">🎯 '+pct(c.ready)+'% ready</span>'+(typeof syncBadge==='function'?syncBadge():'')}
+function applySearch(){
+  if($('#tsearch')){const q=ui.tq.trim().toLowerCase();document.querySelectorAll('#view .row[data-s]').forEach(r=>(r.closest('.titem')||r).classList.toggle('hide',!!q&&!r.dataset.s.includes(q)))}
+  if($('#qsearch')){const q=(ui.qq||'').trim().toLowerCase();document.querySelectorAll('#view .qitem').forEach(r=>r.classList.toggle('hide',!!q&&!r.dataset.s.includes(q)))}
+}
+function render(){const y=window.scrollY;$('#view').innerHTML=PAGE();renderSide();renderChrome();applySearch();if(typeof enhanceCode==='function')enhanceCode();window.scrollTo(0,y)}
+function boot(cur,fn){
+  CUR=cur;PAGE=fn;
+  const dark=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.dataset.theme=S.theme||(dark?'dark':'light');
+  render();
+  const hid=location.hash.slice(1),el=hid&&document.getElementById(hid);
+  if(el){if(el.tagName==='DETAILS'){el.open=true;if(el.dataset.k)ui.open[el.dataset.k]=true}el.scrollIntoView()}
+}
+
+/* ---------------- gamification checks ---------------- */
+function afterChange(){
+  const c=calc();let newB=[];
+  BADGES.forEach(b=>{if(!S.badges[b[0]]&&b[4](c)){S.badges[b[0]]=todayS();newB.push(b)}});
+  const li=level(c.ready);
+  if(li>S.lvl){S.lvl=li;toast(`🆙 Level up! ${LEVELS[li][2]} ${LEVELS[li][1]}`);confetti()}
+  else if(li<S.lvl)S.lvl=li;
+  if(newB.length){toast(`🏅 Badge unlocked: ${newB.map(b=>b[2]).join(', ')}`);confetti()}
+  save();
+}
+
+/* ---------------- events ---------------- */
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.matches('input[data-id]')){
+    const id=t.dataset.id;
+    if(t.checked){S.done[id]=1;S.days[todayS()]=1;toast(`+${REG[id].xp} XP`)}else delete S.done[id];
+    afterChange();render();
+  }else if(t.matches('input[data-pid]')){
+    const id=t.dataset.pid;
+    if(t.checked){S.prac[id]=1;S.days[todayS()]=1;toast('+3 XP')}else delete S.prac[id];
+    afterChange();render();
+  }else if(t.matches('input[data-act="mustonly"]')){S.mustOnly=t.checked;save();render()}
+  else if(t.matches('select[data-app]')){S.apps[+t.dataset.app].status=t.value;afterChange();render();if(t.value==='Offer')confetti()}
+  else if(t.id==='imp'){const f=t.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{Object.assign(S,JSON.parse(rd.result));save();render();toast('Imported')}catch(err){toast('Invalid file')}};rd.readAsText(f)}
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='tsearch'){ui.tq=e.target.value;applySearch()}
+  else if(e.target.id==='qsearch'){ui.qq=e.target.value;applySearch()}
+});
+document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.k)ui.open[d.dataset.k]=d.open},true);
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b||b.tagName==='INPUT')return;
+  const [a,arg]=b.dataset.act.split(/:(.*)/s);
+  if(a==='nav-toggle')$('#side').classList.toggle('open');
+  else if(a==='theme'){const cur=document.documentElement.dataset.theme==='dark'?'light':'dark';S.theme=cur;document.documentElement.dataset.theme=cur;save()}
+  else if(a==='rest'){S.days[todayS()]=S.days[todayS()]||'r';save();toast('Rest day logged. Streak safe 😴');render()}
+  else if(a==='jump-cur'){const i=dayIdx(),w=Math.min(12,Math.max(1,Math.floor(i/7)+1));ui.open['wk'+w]=true;render();const el=$('#wk'+w);if(el)el.scrollIntoView({behavior:'smooth'})}
+  else if(a==='goday'){ui.open['w'+CUR.slice(5)+'d'+arg]=true;setTimeout(()=>{const el=document.getElementById('day-'+arg);if(el){el.open=true;el.scrollIntoView({behavior:'smooth'})}},0)}
+  else if(a==='weekall'){const n=+arg,any=[0,1,2,3,4,5,6].some(d=>ui.open['w'+n+'d'+d]);for(let d=0;d<7;d++)ui.open['w'+n+'d'+d]=!any;render()}
+  else if(a==='tag'){ui.tag=arg;render()}
+  else if(a==='tw'){ui.tw=!ui.tw;render()}
+  else if(a==='tn'){ui.tn=!ui.tn;render()}
+  else if(a==='qlvl'){ui.ql=arg;render()}
+  else if(a==='qst'){ui.qs=arg;render()}
+  else if(a==='qfreq'){ui.qf=!ui.qf;render()}
+  else if(a==='quiz-start'){if(startQuiz(arg,10)){render();const el=document.getElementById('quiz');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}}
+  else if(a==='quiz-new'){const sc=ui.quiz?ui.quiz.scope:'all';ui.quiz=null;startQuiz(sc,10);render()}
+  else if(a.startsWith('quiz-')){quizAct(a)}
+  else if(a==='daydone'){const [n,d]=arg.split(':').map(Number);let xp=0;WEEKS[n-1].days[d].forEach(t=>{if(t.tag==='M'&&!S.done[t.id]){S.done[t.id]=1;xp+=REG[t.id].xp}});if(xp){S.days[todayS()]=1;toast('+'+xp+' XP, day complete!');afterChange();render()}}
+  else if(a==='flag'){if(S.flag[arg])delete S.flag[arg];else S.flag[arg]=1;save();render()}
+  else if(a==='rand'){const ids=qIds(arg).filter(i=>!S.done[i]);if(!ids.length){toast('All prepared! 🎉');return}const id=ids[Math.floor(Math.random()*ids.length)];ui.open[id]=true;render();const el=document.getElementById(id.replace(/:/g,'-'));if(el)el.scrollIntoView({behavior:'smooth',block:'center'})}
+  else if(a==='openall'){const ids=qIds(arg),any=ids.some(i=>ui.open[i]);ids.forEach(i=>ui.open[i]=!any);render()}
+  else if(a==='app-add'){const c=$('#a_c').value.trim(),r=$('#a_r').value.trim();if(!c)return;S.apps.unshift({c,r,d:todayS(),status:'Applied'});S.days[todayS()]=S.days[todayS()]||1;const x=REG['j:8'],n=S.apps.length;if(n>=10)S.done['j:8']=1;if(n>=25)S.done['j:9']=1;if(n>=50)S.done['j:10']=1;afterChange();render()}
+  else if(a==='app-del'){S.apps.splice(+arg,1);save();render()}
+  else if(a==='setstart'){const v=$('#startd').value;if(v){S.start=iso(mondayOf(pd(v)));save();toast('Start date saved');render()}}
+  else if(a==='export'){const bl=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),u=URL.createObjectURL(bl),l=document.createElement('a');l.href=u;l.download='da-quest-progress.json';l.click();URL.revokeObjectURL(u)}
+  else if(a==='import'){$('#imp').click()}
+  else if(a==='reset'){if(confirm('Reset ALL progress? This cannot be undone.')){const th=S.theme;S={done:{},flag:{},prac:{},days:{},apps:[],badges:{},theme:th,start:null,mustOnly:false,lvl:0};const t=new Date(),g=t.getDay();S.start=iso(mondayOf(g===0||g===6?addDays(t,2):t));save();render()}}
+});
+document.addEventListener('click',e=>{if(e.target.closest('#side a'))$('#side').classList.remove('open')});
+
