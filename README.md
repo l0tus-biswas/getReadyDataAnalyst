@@ -1,41 +1,59 @@
 # Get Ready, Data Analyst
 
-A self-study site for becoming a job-ready entry-level Data Analyst in 12 weeks while working a full-time job. It works on laptop, iPad and phone, and offline once installed.
+A self-study platform for becoming a job-ready entry-level Data Analyst in 12 weeks while working a full-time job. Every learner has an account; an admin manages users. It works on laptop, iPad and phone, and offline once installed.
 
 ## What is inside
 
+- **Accounts and admin panel**: email and password sign-in. The admin creates users, resets passwords, disables or deletes accounts, and can **view the app as any learner (read-only)**. Viewing as a user saves nothing and records nothing for them: the server refuses every write, the study timer is off, and the learner's data is never copied to the admin's browser. Each start and stop of a view is noted in an admin activity log. There is no sign-up, no "forgot password" and no change-password form; the admin sets and resets passwords.
+- **Profile**: avatar in the top bar opens a page with your stats, badges and sign-out.
 - **12-week plan** (Days 1-5 of each week about 1.5 h, Days 6-7 about 3.5 h; Day 1 is the day you start) with a detailed guide for every day: what to study, step-by-step how-to, a worked example, practice questions with answers, important interview questions, and a notes box.
 - **235 interview questions** across SQL, Power BI/DAX, Excel, Python/pandas, statistics, business cases, survey analytics and HR. Each has a level, a 30-second spoken answer, the full answer, follow-ups and the most common mistake.
-- **Review (spaced repetition)**: flagged, prepared and missed questions come back after 1, 3, 7, 14, 30 and 60 days.
-- **Mock interview**: timed sets (SQL sprint, technical round, full loop, cases and HR, or a one-topic drill) picked from your weak spots, self-scored, with a report. Misses go to the review queue.
-- **Weekly check-in**: how the week went, carry leftover tasks forward, shift the plan if you fell behind.
-- **My Progress**: daily goal, study calendar (heatmap), weekly summary, ranked weak-spot report and mock history.
-- **Study timer** that counts only real interaction (taps, typing, ticking, answering). Scrolling or leaving a page open counts for nothing. It also pauses when the tab is hidden or another tab is the active one. Optional 15/25/45-minute focus sessions.
-- **Search** across topics, questions, guides, practice and your notes (press `/`), **Notes** for each plan day.
-- **Flashcard quiz**, **149 topics** tagged Must / Optional / Advanced with interview weight, **4 portfolio projects**, a job-hunt checklist and application tracker.
-- **SQL Lab**: run SQL in the browser (SQLite via sql.js) against the practice tables.
-- **Gamified tracking**: XP, levels, streaks, badges, celebration popups and a "job readiness" score.
+- **Review (spaced repetition)**, **mock interviews**, **weekly check-in**, **My Progress** (goal, heatmap, weekly summary, weak-spot report), a **study timer that counts only real interaction**, **search**, **notes**, **flashcard quiz**, **149 topics**, **4 portfolio projects**, a job-hunt tracker, **SQL Lab**, and gamified XP, levels, badges and celebrations.
 
-Plain HTML, CSS and JavaScript. No framework and no server code.
+Plain HTML, CSS and JavaScript on the front end; three small serverless functions (`api/`) and MongoDB for accounts and progress.
 
 ## Run locally
 
-Open `index.html` in Chrome or Edge. Progress is saved in your browser (localStorage), so use the same browser each time. The plan starts on the date you choose in Settings.
+```
+npm install
+npm run dev          # http://localhost:3000
+```
 
-To test with a local server: `python -m http.server 8000`, then open <http://localhost:8000>. Offline support (service worker) only works over `https://` or `localhost`.
+Create a `.env` file (see `.env.example`). The first time the app starts with no admin in the database it creates one from `ADMIN_EMAIL` and `ADMIN_PASSWORD`. Sign in with those, open **Admin panel**, and add your users.
+
+Opening `index.html` straight from the file system still works in **local mode** (no accounts, progress kept in that browser).
 
 ## Deploy to Vercel
 
-It is a static site. Import the repository with the **Other** framework preset, no build command and an empty output directory. Nothing else is needed.
+1. Import the repository. Framework preset **Other**, no build command, empty output directory.
+2. Add these **environment variables** (Settings > Environment Variables):
 
-After deploying, open the site on your phone or iPad and use **Add to Home Screen** (Safari) or **Install app** (Chrome/Edge). Pages and scripts are cached so it keeps working without a connection. When you are online the newest files are always used first.
+   | Name | Value |
+   |---|---|
+   | `MONGODB_URI` | MongoDB Atlas connection string, including the database name |
+   | `SESSION_SECRET` | a long random string (24+ characters) that signs sign-in cookies |
+   | `ADMIN_EMAIL` | email for the first admin |
+   | `ADMIN_PASSWORD` | password for the first admin (8+ characters) |
+
+3. In **MongoDB Atlas > Network Access** allow Vercel to connect (its IPs change, so this usually means `0.0.0.0/0`). Use a database user limited to this database.
+4. Deploy, open the site, sign in as the admin and create users.
+
+After deploying, open the site on your phone or iPad and use **Add to Home Screen** (Safari) or **Install app** (Chrome/Edge). Pages and scripts are cached so the app keeps working without a connection, and changes sync when you are back online.
+
+## Security notes
+
+- Passwords are hashed with scrypt and a per-user salt; they are never stored or logged in plain text.
+- Sessions are signed, HttpOnly, SameSite cookies. Disabling a user, resetting a password or changing a role signs that user out everywhere.
+- Every write needs a custom request header, so other websites cannot post to the API.
+- Sign-in is limited to 8 failed attempts per email or address in 15 minutes.
+- `.env` is git-ignored. Never commit secrets.
 
 ## Changing the site
 
 All HTML pages and `sw.js` are generated from one template:
 
 ```
-node tools/build-pages.js     # regenerate the pages and the offline cache list
+npm run build                 # node tools/build-pages.js
 python tools/make-icons.py    # regenerate the app icons (needs Pillow)
 ```
 
@@ -44,20 +62,16 @@ Edit `tools/build-pages.js` rather than the `.html` files.
 ## Project layout
 
 ```
-index.html, plan.html, week-1..12.html, review.html, mock.html, checkin.html,
-progress.html, notes.html, search.html, topics.html, interview.html,
-qa-<topic>.html (8 pages), projects.html, jobs.html, resources.html,
-sql-lab.html, settings.html           (generated)
-manifest.webmanifest, sw.js, icons/   installable app + offline cache
+*.html                     generated pages (login.html is stand-alone)
+manifest.webmanifest, sw.js, icons/    installable app + offline cache
 css/style.css, css/features.css
-js/data-*.js         plan, topics, projects, misc
-js/qa-*.js           interview question banks
-js/guide-w1..12.js   day-by-day week guides
-js/core.js           state, scoring, badges
-js/app.js, ux.js     navigation, quiz, celebrations, code highlighting
+api/auth.js, progress.js, admin.js     serverless functions
+api/_lib/                  database, sessions and password helpers
+js/data-*.js, qa-*.js, guide-w1..12.js  content
+js/core.js, app.js, ux.js, auth.js      shared logic, accounts, read-only mode
 js/sr.js, timer.js, notes.js, mock.js, checkin.js, progress.js, search.js
-js/page-*.js         one renderer per page
-tools/               page builder and icon generator
+js/page-*.js               one renderer per page
+tools/                     page builder, icon generator, local dev server
 ```
 
 ## Content notes

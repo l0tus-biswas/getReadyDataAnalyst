@@ -40,6 +40,7 @@ function tmWhy(){
   return '';
 }
 function tmTick(){
+  if(typeof READONLY!=='undefined'&&READONLY){TM.state='idle';TM.why='Viewing another user (read-only). Nothing is timed.';tmRefresh();return}
   const why=tmWhy();TM.state=why?'idle':'active';TM.why=why;
   if(!why){
     const a=actOf();a.sec=(a.sec||0)+1;TM.n++;

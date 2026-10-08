@@ -8,7 +8,7 @@ const w = (f, s) => fs.writeFileSync(path.join(ROOT, f), s);
 
 // scripts every page loads, in order
 const CORE = ['data-plan', 'data-topics', 'data-projects', 'data-qa', 'qa-sql', 'qa-pbi-excel', 'qa-py-stats', 'qa-biz-survey-hr',
-  'data-misc', 'core', 'app', 'ux', 'sr', 'notes', 'timer'];
+  'data-misc', 'core', 'app', 'ux', 'sr', 'notes', 'timer', 'auth'];
 const QK = ['sql', 'pbi', 'excel', 'py', 'stats', 'biz', 'survey', 'hr'];
 const ALL_GUIDES = Array.from({ length: 12 }, (_, i) => 'guide-w' + (i + 1));
 
@@ -29,6 +29,8 @@ const PAGES = [
   ['jobs', 'Job Hunt', ['page-jobs'], 'pageJobs'],
   ['resources', 'Resources', ['page-resources'], 'pageRes'],
   ['settings', 'Settings', ['page-settings'], 'pageSettings'],
+  ['profile', 'Profile', ['page-profile', 'progress'], 'pageProfile'],
+  ['admin', 'Admin panel', ['page-admin'], 'pageAdmin'],
 ];
 
 const head = (title) => `<!doctype html>
@@ -59,8 +61,9 @@ const head = (title) => `<!doctype html>
     <div class="sp"></div>
     <form class="topsearch" action="search.html" method="get" role="search"><input id="topsearch" name="q" type="search" placeholder="Search ( / )" aria-label="Search"></form>
     <button class="ib" data-act="theme" aria-label="Toggle theme">🌓</button>
+    <a class="avatar" id="avatar" href="profile.html" aria-label="Your profile" hidden></a>
   </div>
-  <div id="view"></div>
+  <div id="view"><p class="sm" style="padding:20px">Loading…</p></div>
 </main>
 </div>
 `;
@@ -70,7 +73,7 @@ const tail = (extra, boot, pre = '') =>
 const files = [];
 PAGES.forEach(([f, title, extra, fn]) => {
   const pre = f === 'sql-lab' ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>\n' : '';
-  const boot = f === 'sql-lab' ? `boot('${f}',${fn});initSqlLab();` : `boot('${f}',${fn});`;
+  const boot = f === 'sql-lab' ? `boot('${f}',${fn}).then(()=>initSqlLab());` : f === 'admin' ? `boot('${f}',${fn}).then(adminLoad);` : `boot('${f}',${fn});`;
   w(f + '.html', head(title) + tail(extra, boot, pre));
   files.push(f + '.html');
 });
@@ -82,6 +85,40 @@ for (let n = 1; n <= 12; n++) {
   w(`week-${n}.html`, head(`Week ${n} Guide`) + tail(['guides-init', `guide-w${n}`, 'page-week'], `boot('week-${n}',()=>pageWeek(${n}));`));
   files.push(`week-${n}.html`);
 }
+
+// ---------- sign-in page (no app shell) ----------
+w('login.html', `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sign in · Data Analyst Quest</title>
+<meta name="theme-color" content="#4f46e5">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/features.css">
+</head>
+<body class="login-body">
+<main class="login-card">
+  <div class="login-logo" aria-hidden="true">🎯</div>
+  <h1>Get Ready, Data Analyst</h1>
+  <p class="sm">Sign in to continue your 12-week plan.</p>
+  <form id="lf" novalidate>
+    <label>Email<input id="email" type="email" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" required></label>
+    <label>Password<span class="pw"><input id="pw" type="password" autocomplete="current-password" required><button type="button" id="show" aria-label="Show password">👁</button></span></label>
+    <div id="err" role="alert" aria-live="polite"></div>
+    <button class="btn" id="go" type="submit">Sign in</button>
+  </form>
+  <p id="local" class="sm"></p>
+  <p class="sm login-foot">Need an account or a new password? Ask your admin.</p>
+</main>
+<script src="js/login.js"></script>
+</body>
+</html>
+`);
+files.push('login.html');
 
 // ---------- offline service worker ----------
 const assets = [
@@ -104,6 +141,7 @@ self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  if (url.pathname.startsWith('/api/')) return;   // accounts and progress always go to the network
   if (url.origin === location.origin) {
     // same site: network first (4 s limit), fall back to the cache when offline
     e.respondWith((async () => {

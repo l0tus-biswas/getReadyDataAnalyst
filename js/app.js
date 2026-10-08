@@ -1,5 +1,5 @@
 /* App shell: navigation, rendering, gamification checks, events */
-const NAV=[['index','🏠','Dashboard'],['plan','📅','12-Week Plan'],['review','🔁','Review'],['mock','🎤','Mock Interview'],['interview','💬','Interview Q&A'],['interview.html#quiz','🎲','Quick Quiz'],['topics','📚','Topics & Skills'],['progress','📊','My Progress'],['checkin','📋','Weekly Check-in'],['notes','📝','Notes'],['sql-lab','⌨️','SQL Lab'],['search','🔍','Search'],['projects','🧪','Projects'],['jobs','💼','Job Hunt'],['resources','🔗','Resources'],['settings','⚙️','Settings']];
+const NAV=[['index','🏠','Dashboard'],['plan','📅','12-Week Plan'],['review','🔁','Review'],['mock','🎤','Mock Interview'],['interview','💬','Interview Q&A'],['interview.html#quiz','🎲','Quick Quiz'],['topics','📚','Topics & Skills'],['progress','📊','My Progress'],['checkin','📋','Weekly Check-in'],['notes','📝','Notes'],['sql-lab','⌨️','SQL Lab'],['search','🔍','Search'],['profile','👤','Profile'],['projects','🧪','Projects'],['jobs','💼','Job Hunt'],['resources','🔗','Resources'],['settings','⚙️','Settings']];
 let PAGE=null,CUR='';
 // which plan week needs a check-in (0 = none): Day 6-7 of a week, or an earlier week never checked in
 function ciDue(){
@@ -16,29 +16,46 @@ function navBadge(p){
 }
 function renderSide(){
   const inQA=CUR==='interview'||CUR.startsWith('qa-'),inPlan=CUR==='plan'||CUR.startsWith('week-');
-  $('#side').innerHTML='<h1>🎯 DA Quest</h1>'+NAV.map(n=>{
+  const nav=NAV.slice();
+  if(typeof AUTH!=='undefined'&&AUTH.admin&&!READONLY)nav.splice(nav.length-1,0,['admin','🛠️','Admin panel']);
+  const foot=(typeof AUTH!=='undefined'&&AUTH.mode==='user'&&AUTH.user&&!READONLY)?`<div class="sidefoot"><div class="sf-name">👤 ${esc(AUTH.user.name)}</div><div class="sm">${esc(AUTH.user.email)}</div><button type="button" class="btn ghost" data-act="logout">Sign out</button></div>`:'';
+  $('#side').innerHTML='<h1>🎯 DA Quest</h1>'+nav.map(n=>{
     const on=CUR===n[0]||(n[0]==='interview'&&inQA)||(n[0]==='plan'&&inPlan);
     return '<a class="nav '+(on?'on':'')+'" href="'+(n[0].includes('.')?n[0]:n[0]+'.html')+'">'+n[1]+' '+n[2]+navBadge(n[0])+'</a>'+
       (n[0]==='interview'&&inQA?'<div class="sub">'+QORDER.map(k=>'<a class="'+(CUR==='qa-'+k?'on':'')+'" href="qa-'+k+'.html">'+QA[k].emoji+' '+QA[k].name+'</a>').join('')+'</div>':'')+
-      (n[0]==='plan'&&inPlan?'<div class="sub">'+WEEKS.map(w=>'<a class="'+(CUR==='week-'+w.n?'on':'')+'" href="week-'+w.n+'.html">W'+w.n+' · '+w.title+'</a>').join('')+'</div>':'')}).join('')}
+      (n[0]==='plan'&&inPlan?'<div class="sub">'+WEEKS.map(w=>'<a class="'+(CUR==='week-'+w.n?'on':'')+'" href="week-'+w.n+'.html">W'+w.n+' · '+w.title+'</a>').join('')+'</div>':'')}).join('')+foot}
 function renderBottomNav(){
   let b=document.getElementById('bnav');
   if(!b){b=document.createElement('nav');b.id='bnav';b.setAttribute('aria-label','Quick navigation');document.body.appendChild(b)}
   const items=[['index','🏠','Home'],['plan','📅','Plan'],['review','🔁','Review'],['mock','🎤','Mock']];
   b.innerHTML=items.map(n=>`<a class="${CUR===n[0]||(n[0]==='plan'&&CUR.startsWith('week-'))?'on':''}" href="${n[0]}.html"><span>${n[1]}</span>${n[2]}${navBadge(n[0])}</a>`).join('')+`<button type="button" data-act="nav-toggle"><span>☰</span>More</button>`;
 }
-function renderChrome(){const c=calc(),L=LEVELS[level(c.ready)];
-  $('#chrome').innerHTML=(typeof timerPill==='function'?timerPill():'')+'<span class="pill hide-sm">'+L[2]+' '+L[1]+'</span><span class="pill hide-sm">⭐ '+c.xp+' XP</span><span class="pill">🔥 '+streak()+'</span><span class="pill hide-sm">🎯 '+pct(c.ready)+'% ready</span>'}
+function renderAvatar(){
+  const a=document.getElementById('avatar');if(!a)return;
+  const u=(typeof AUTH!=='undefined'&&AUTH.user)?AUTH.user:null;
+  a.hidden=!(u&&AUTH.mode==='user');
+  if(u){a.textContent=initials(u.name);a.title=(READONLY?'Viewing as ':'Signed in as ')+u.name+' ('+u.email+')';a.classList.toggle('imp',!!READONLY);a.classList.toggle('on',CUR==='profile')}
+}
+function renderChrome(){renderAvatar();const c=calc(),L=LEVELS[level(c.ready)];
+  $('#chrome').innerHTML=(typeof timerPill==='function'?timerPill():'')+(typeof userPill==='function'?userPill():'')+'<span class="pill hide-sm">'+L[2]+' '+L[1]+'</span><span class="pill hide-sm">⭐ '+c.xp+' XP</span><span class="pill">🔥 '+streak()+'</span><span class="pill hide-sm">🎯 '+pct(c.ready)+'% ready</span>'}
 function applySearch(){
   if($('#tsearch')){const q=ui.tq.trim().toLowerCase();document.querySelectorAll('#view .row[data-s]').forEach(r=>(r.closest('.titem')||r).classList.toggle('hide',!!q&&!r.dataset.s.includes(q)))}
   if($('#qsearch')){const q=(ui.qq||'').trim().toLowerCase();document.querySelectorAll('#view .qitem').forEach(r=>r.classList.toggle('hide',!!q&&!r.dataset.s.includes(q)))}
 }
-function setTopH(){const t=document.querySelector('.top');if(t)document.documentElement.style.setProperty('--topH',t.offsetHeight+'px')}
+function setTopH(){
+  const t=document.querySelector('.top'),ib=document.getElementById('impbar'),r=document.documentElement.style;
+  const th=t?t.offsetHeight:0,ih=ib?ib.offsetHeight:0;
+  r.setProperty('--topH',th+'px');r.setProperty('--impH',ih+'px');r.setProperty('--stick',(th+ih)+'px');
+}
 function render(){const y=window.scrollY;$('#view').innerHTML=PAGE();renderSide();renderChrome();renderBottomNav();applySearch();if(typeof enhanceCode==='function')enhanceCode();setTopH();window.scrollTo(0,y)}
-function boot(cur,fn){
-  CUR=cur;PAGE=fn;
+async function boot(cur,fn){
+  CUR=cur;
+  const ok=await authInit();   // redirects to the login page when not signed in
+  if(!ok)return;
+  PAGE=fn;
   const dark=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches;
   document.documentElement.dataset.theme=S.theme||(dark?'dark':'light');
+  if(READONLY&&!document.getElementById('impbar')){const w=document.createElement('div');w.innerHTML=impBar();document.body.insertBefore(w.firstChild,document.body.firstChild)}
   render();
   // jump to #hash targets and open every collapsed section around them
   const hid=decodeURIComponent(location.hash.slice(1)),el=hid&&document.getElementById(hid);
@@ -67,7 +84,7 @@ function afterChange(){
 
 /* ---------------- reset ---------------- */
 function resetAll(){
-  const v=prompt('This permanently deletes ALL your progress: ticked tasks, XP, streaks, badges, practice, flagged questions and applications. The plan restarts today.\n\nThere is no undo. Type RESET to confirm:');
+  const v=prompt('This permanently deletes ALL your progress (including the copy saved in your account): ticked tasks, XP, streaks, badges, practice, flagged questions and applications. The plan restarts today.\n\nThere is no undo. Type RESET to confirm:');
   if(v===null)return false;
   if(v.trim().toUpperCase()!=='RESET'){toast('Reset cancelled. You have to type RESET.');return false}
   const keep={theme:S.theme,celebrate:S.celebrate};

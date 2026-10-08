@@ -26,8 +26,9 @@
     <div class="sp"></div>
     <form class="topsearch" action="search.html" method="get" role="search"><input id="topsearch" name="q" type="search" placeholder="Search ( / )" aria-label="Search"></form>
     <button class="ib" data-act="theme" aria-label="Toggle theme">🌓</button>
+    <a class="avatar" id="avatar" href="profile.html" aria-label="Your profile" hidden></a>
   </div>
-  <div id="view"></div>
+  <div id="view"><p class="sm" style="padding:20px">Loading…</p></div>
 </main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
@@ -46,7 +47,8 @@
 <script src="js/sr.js"></script>
 <script src="js/notes.js"></script>
 <script src="js/timer.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/page-sqllab.js"></script>
-<script>boot('sql-lab',pageSqlLab);initSqlLab();</script>
+<script>boot('sql-lab',pageSqlLab).then(()=>initSqlLab());</script>
 </body>
 </html>
